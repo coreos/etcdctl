@@ -34,7 +34,7 @@ Tailing a key:
 	$ etcdctl -k /foo/bar -w
 	.... client hangs forever until ctrl+C or the watching value changes 
 
-    $ etcdctl /foo/bar -wf
+    $ etcdctl /foo/bar --wf
     Hello world
     .... client hangs forever until ctrl+C printing values as key change
 
