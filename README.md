@@ -7,17 +7,22 @@ This is our spec/working area for a simple command line client for etcd. This cl
 
 Setting a key on `/foo/bar`: 
 
-    $ etcdctl /foo/bar "Hello world"
+    $ etcdctl set /foo/bar "Hello world"
     Hello world
     
 Getting a key:
 
-    $ etcdctl /foo/bar
+    $ etcdctl get /foo/bar
     Hello world
-    
+
+Deleting a key:
+
+	$ etcdctl delete /foo/bar
+    Hello world
+
 Tailing a key:
 
-    $ etcdctl /foo/bar -f
+    $ etcdctl watch /foo/bar -f
     Hello world
     .... client hangs forever until ctrl+C printing values as key change
 
