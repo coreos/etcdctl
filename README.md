@@ -26,7 +26,7 @@ Deleting a key:
 
 Atomic Test and Set
 
-    $ etcdctl -k /foo/bar -pv "Hello world" -v "Hello etcd"
+    $ etcdctl -k /foo/bar --pv "Hello world" -v "Hello etcd"
     Hello etcd    
     
 Tailing a key:
