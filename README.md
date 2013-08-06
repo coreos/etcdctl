@@ -38,6 +38,31 @@ Tailing a key:
     Hello world
     .... client hangs forever until ctrl+C printing values as key change
 
+## Flags 
+
+-c      a list of machines in one cluster
+
+-d      delete a key
+
+-v      the value to set
+--pv    the previous to test against
+
+-w      watch change of a key
+--wf    keep on watching changes of a key 
+--index the index to watch from
+
+--cert  client certificate
+--key   client private key 
+
+--detail detailed return information 
+
+## Environment Variables 
+
+ETCD_CLUSTER - The etcd cluster to join to; overridden by -c.
+ETCD_KEY     - The client key path; overridden by --key
+ETCD_CERT    - The client certificate path; overridden by --cert
+
+
 ## Return Codes
 
 0	Success
