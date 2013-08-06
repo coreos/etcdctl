@@ -52,7 +52,7 @@ Tailing a key:
 
 --wf    keep on watching changes of a key 
 
---index the index to watch from
+-i      the index to watch from
 
 --cert  client certificate
 
