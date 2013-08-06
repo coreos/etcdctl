@@ -10,7 +10,7 @@ Setting a key on `/foo/bar`:
     $ etcdctl -k /foo/bar -v "Hello world"
     Hello world
 
-    $ etcdctl -k /foo/bar -v "Hello world" -ttl 100
+    $ etcdctl -k /foo/bar -v "Hello world" --ttl 100
     Hello world
     99
  
