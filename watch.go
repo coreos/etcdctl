@@ -31,6 +31,8 @@ func watch(args []string) error {
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, os.Interrupt)
 
+		stop := make(chan bool)
+
 		go func() {
 			<-c
 			stop <- true
@@ -38,7 +40,6 @@ func watch(args []string) error {
 		}()
 
 		receiver := make(chan *store.Response)
-		stop := make(chan bool)
 		go client.Watch(key, uint64(*index), receiver, stop)
 
 		for {
