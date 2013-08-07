@@ -1,6 +1,8 @@
 etcdctl
 ========
 
+[![Build Status](https://travis-ci.org/coreos/etcdctl.png)](https://travis-ci.org/coreos/etcdctl)
+
 This is our spec/working area for a simple command line client for etcd. This client will be bundled with CoreOS. This is all brainstorming at the moment. Please contribute!
 
 ## Example usage
