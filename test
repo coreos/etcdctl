@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Get GOPATH, etc from build
+. ./build
