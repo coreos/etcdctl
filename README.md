@@ -26,6 +26,10 @@ Tailing a key:
     Hello world
     .... client hangs forever until ctrl+C printing values as key change
 
+## Building
+
+    ./build
+
 ## Return Codes
 
 0	Success
