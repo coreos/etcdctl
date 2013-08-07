@@ -26,6 +26,7 @@ func main() {
 	command, ok := commands[commandName]
 
 	if !ok {
+		fmt.Println("wrong command provided")
 		os.Exit(MalformedEtcdctlArguments)
 	}
 
@@ -36,12 +37,14 @@ func main() {
 	}
 
 	if !client.SyncCluster() {
+		fmt.Println("cannot sync with the given cluster")
 		os.Exit(FailedToConnectToHost)
 	}
 
 	err := command.f(args)
 
 	if err != nil {
-		os.Exit(1)
+		fmt.Println(err)
+		os.Exit(ErrorFromEtcd)
 	}
 }

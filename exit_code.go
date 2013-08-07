@@ -5,6 +5,5 @@ const (
 	MalformedEtcdctlArguments
 	FailedToConnectToHost
 	FailedToAuth
-	Error400FromEtcd
-	Error500FromEtcd
+	ErrorFromEtcd
 )
