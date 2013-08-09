@@ -9,7 +9,7 @@ import (
 	"github.com/coreos/go-etcd/etcd"
 )
 
-const setUsage = `usage: etcdctl [etcd flags] <command}
+const setUsage = `usage: etcdctl [etcd flags] <command>
 
 Commands:
 
