@@ -50,7 +50,7 @@ List all members:
    
 To delete a member:
 
-    $ ./etcdctl sdel /queues amqp://user:password@rabbitmq1
+    $ etcdctl sdel /queues amqp://user:password@rabbitmq1
 
 ## Building
 
