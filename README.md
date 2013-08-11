@@ -70,7 +70,9 @@ etcdctl sdel /queues amqp://user:password@rabbitmq1
 
 ## Building
 
-    ./build
+```
+./build
+```
 
 ## Return Codes
 
