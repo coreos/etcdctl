@@ -22,12 +22,9 @@ Commands:
 `
 
 var (
-	sAddFlag = flag.NewFlagSet("sadd", flag.ExitOnError)
-	addTtl = sAddFlag.Int64("ttl", 0, "ttl of the key")
-
-	sRemoveFlag = flag.NewFlagSet("sdel", flag.ExitOnError)
+	saddFlag = flag.NewFlagSet("sadd", flag.ExitOnError)
+	saddTtl = saddFlag.Int64("ttl", 0, "ttl of the key")
 )
-
 
 func hash(str string) string {
 	h := md5.New()
@@ -56,6 +53,7 @@ func sadd(args []string) error {
 
 	setKey := args[1]
 	value := args[2]
+	saddFlag.Parse(args[3:])
 
 	// Create the set unless it exists
 	if ! setExists(setKey) {
@@ -67,7 +65,7 @@ func sadd(args []string) error {
 	}
 
 	key := fmt.Sprintf("%s/%s", setKey, hash(value))
-	_, err := client.Set(key, value, uint64(*addTtl))
+	_, err := client.Set(key, value, uint64(*saddTtl))
 	if err != nil {
 		return err
 	}
