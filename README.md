@@ -47,20 +47,26 @@ an etcd key, so that they can be detected and used by clients.
 
 Adding members to a set:
 
-    $ etcdctl sadd /queues amqp://user:password@rabbitmq1
-    amqp://user:password@rabbitmq1
-    $ etcdctl sadd /queues amqp://user:password@rabbitmq2 --ttl=60
-    amqp://user:password@rabbitmq2
+```
+etcdctl sadd /queues amqp://user:password@rabbitmq1
+amqp://user:password@rabbitmq1
+etcdctl sadd /queues amqp://user:password@rabbitmq2 --ttl=60
+amqp://user:password@rabbitmq2
+```
     
 List all members:
 
-    $ etcdctl smembers /queues
-    amqp://user:password@rabbitmq1
-    amqp://user:password@rabbitmq2
-   
+```
+etcdctl smembers /queues
+amqp://user:password@rabbitmq1
+amqp://user:password@rabbitmq2
+```
+
 To delete a member:
 
-    $ etcdctl sdel /queues amqp://user:password@rabbitmq1
+```
+etcdctl sdel /queues amqp://user:password@rabbitmq1
+```
 
 ## Building
 
