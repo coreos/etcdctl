@@ -26,7 +26,6 @@ var (
 	addTtl = sAddFlag.Int64("ttl", 0, "ttl of the key")
 
 	sRemoveFlag = flag.NewFlagSet("sdel", flag.ExitOnError)
-	// FIXME: add a '--all' flag to setremove
 )
 
 
@@ -119,7 +118,7 @@ func smembers(args []string) error {
 	headKey := getHeadKey(setKey)
 	for _, resp := range resps {
 		if resp.Key != headKey {
-			fmt.Printf("\"%s\"\n", resp.Value)
+			fmt.Printf("%s\n", resp.Value)
 		}
 	}
 
