@@ -3,9 +3,23 @@ etcdctl
 
 [![Build Status](https://travis-ci.org/coreos/etcdctl.png)](https://travis-ci.org/coreos/etcdctl)
 
-This is our spec/working area for a simple command line client for etcd. This client will be bundled with CoreOS. This is all brainstorming at the moment. Please contribute!
+`etcdctl` is a command line client for [etcd][etcd]. It can be used in scripts or for administrators to explore an etcd cluster.
 
-## Example usage
+[etcd]: https://github.com/coreos/etcd
+
+## Getting etcdctl
+
+The latest release is available as a binary at [Github][github-release] along with etcd.
+
+[github-release]: https://github.com/coreos/etcd/releases/
+
+You can also build etcdctl from source:
+
+```
+./build
+```
+
+## Usage
 
 ### Key/Value
 
@@ -68,12 +82,6 @@ To delete a member:
 etcdctl sdel /queues amqp://user:password@rabbitmq1
 ```
 
-## Building
-
-```
-./build
-```
-
 ## Return Codes
 
 0	Success
@@ -87,3 +95,18 @@ etcdctl sdel /queues amqp://user:password@rabbitmq1
 4	400 error from etcd
 
 5	500 error from etcd
+
+## Project Details
+
+### Versioning
+
+etcdctl uses [semantic versioning][semver].
+Releases will follow lockstep with the etcd release cycle.
+
+[semver]: http://semver.org/
+
+### License
+
+etcdctl is under the Apache 2.0 license. See the [LICENSE][license] file for details.
+
+[license]: https://github.com/coreos/etcdctl/blob/master/LICENSE
