@@ -44,7 +44,7 @@ func setExists(key string) bool {
 
 func init() {
 	registerCommand("sadd", sUsage, 3, 4, sadd)
-	registerCommand("sremove", sUsage, 3, 3, sdel)
+	registerCommand("sdel", sUsage, 3, 3, sdel)
 	registerCommand("sismember", sUsage, 3, 3, sismember)
 	registerCommand("smembers", sUsage, 2, 2, smembers)
 }
