@@ -9,23 +9,23 @@ import (
 	"github.com/coreos/go-etcd/etcd"
 )
 
-const setUsage = `usage: etcdctl [etcd flags] <command>
+const sUsage = `usage: etcdctl [etcd flags] <command>
 
 Commands:
 
-  setadd <key> <value> [flags]
+  sadd <key> <value> [flags]
     --ttl to set add a value with a ttl to the set
-  setremove <key> <value>
-  setmembers <key>
-  setismember <key> <value>
+  sdel <key> <value>
+  smembers <key>
+  sismember <key> <value>
 
 `
 
 var (
-	setAddFlag = flag.NewFlagSet("setadd", flag.ExitOnError)
-	addTtl = setAddFlag.Int64("ttl", 0, "ttl of the key")
+	sAddFlag = flag.NewFlagSet("sadd", flag.ExitOnError)
+	addTtl = sAddFlag.Int64("ttl", 0, "ttl of the key")
 
-	setRemoveFlag = flag.NewFlagSet("setremove", flag.ExitOnError)
+	sRemoveFlag = flag.NewFlagSet("sdel", flag.ExitOnError)
 	// FIXME: add a '--all' flag to setremove
 )
 
@@ -47,13 +47,13 @@ func setExists(key string) bool {
 }
 
 func init() {
-	registerCommand("setadd", setUsage, 3, 4, SetAdd)
-	registerCommand("setremove", setUsage, 3, 3, SetRemove)
-	registerCommand("setismember", setUsage, 3, 3, SetIsMember)
-	registerCommand("setmembers", setUsage, 2, 2, SetMembers)
+	registerCommand("sadd", sUsage, 3, 4, sadd)
+	registerCommand("sremove", sUsage, 3, 3, sdel)
+	registerCommand("sismember", sUsage, 3, 3, sismember)
+	registerCommand("smembers", sUsage, 2, 2, smembers)
 }
 
-func SetAdd(args []string) error {
+func sadd(args []string) error {
 
 	setKey := args[1]
 	value := args[2]
@@ -78,7 +78,7 @@ func SetAdd(args []string) error {
 	return nil
 }
 
-func SetRemove(args []string) error {
+func sdel(args []string) error {
 
 	setKey := args[1]
 
@@ -104,7 +104,7 @@ func SetRemove(args []string) error {
 	return nil
 }
 
-func SetMembers(args []string) error {
+func smembers(args []string) error {
 	setKey := args[1]
 
 	if ! setExists(setKey) {
@@ -126,7 +126,7 @@ func SetMembers(args []string) error {
 	return nil
 }
 
-func SetIsMember(args []string) error {
+func sismember(args []string) error {
 	setKey := args[1]
 	value := args[2]
 
