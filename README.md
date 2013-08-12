@@ -21,7 +21,7 @@ You can also build etcdctl from source:
 
 ## Usage
 
-### Key/Value
+### Key Value Storage
 
 Setting a key on `/foo/bar`:
 
