@@ -3,6 +3,7 @@ package store
 import (
 	"encoding/json"
 	"fmt"
+	etcdErr "github.com/coreos/etcd/error"
 	"path"
 	"strconv"
 	"sync"
@@ -27,7 +28,7 @@ type Store struct {
 	// the watching condition.
 	// It is needed so that clone() can atomically replicate the Store
 	// and do the log snapshot in a go routine.
-	mutex sync.Mutex
+	mutex sync.RWMutex
 
 	// WatcherHub is where we register all the clients
 	// who issue a watch request
@@ -35,7 +36,7 @@ type Store struct {
 
 	// The string channel to send messages to the outside world
 	// Now we use it to send changes to the hub of the web service
-	messager *chan string
+	messager chan<- string
 
 	// A map to keep the recent response to the clients
 	ResponseMap map[string]*Response
@@ -141,7 +142,7 @@ func CreateStore(max int) *Store {
 }
 
 // Set the messager of the store
-func (s *Store) SetMessager(messager *chan string) {
+func (s *Store) SetMessager(messager chan<- string) {
 	s.messager = messager
 }
 
@@ -205,7 +206,7 @@ func (s *Store) internalSet(key string, value string, expireTime time.Time, inde
 		} else {
 
 			// If we want the permanent node to have expire time
-			// We need to create create a go routine with a channel
+			// We need to create a go routine with a channel
 			if isExpire {
 				node.update = make(chan time.Time)
 				go s.monitorExpiration(key, node.update, expireTime)
@@ -224,8 +225,7 @@ func (s *Store) internalSet(key string, value string, expireTime time.Time, inde
 
 		// Send to the messager
 		if s.messager != nil && err == nil {
-
-			*s.messager <- string(msg)
+			s.messager <- string(msg)
 		}
 
 		s.addToResponseMap(index, &resp)
@@ -240,8 +240,7 @@ func (s *Store) internalSet(key string, value string, expireTime time.Time, inde
 		ok := s.Tree.set(key, Node{value, expireTime, update})
 
 		if !ok {
-			err := NotFile(key)
-			return nil, err
+			return nil, etcdErr.NewError(102, "set: "+key)
 		}
 
 		if isExpire {
@@ -257,8 +256,7 @@ func (s *Store) internalSet(key string, value string, expireTime time.Time, inde
 
 		// Send to the messager
 		if s.messager != nil && err == nil {
-
-			*s.messager <- string(msg)
+			s.messager <- string(msg)
 		}
 
 		s.addToResponseMap(index, &resp)
@@ -306,8 +304,8 @@ func (s *Store) internalGet(key string) *Response {
 // If key is a file return the file
 // If key is a directory reuturn an array of files
 func (s *Store) Get(key string) ([]byte, error) {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
 
 	resps, err := s.RawGet(key)
 
@@ -315,7 +313,12 @@ func (s *Store) Get(key string) ([]byte, error) {
 		return nil, err
 	}
 
-	if len(resps) == 1 {
+	key = path.Clean("/" + key)
+
+	// If the number of resps == 1 and the response key
+	// is the key we query, a signal key-value should
+	// be returned
+	if len(resps) == 1 && resps[0].Key == key {
 		return json.Marshal(resps[0])
 	}
 
@@ -390,8 +393,7 @@ func (s *Store) RawGet(key string) ([]*Response, error) {
 		return resps, nil
 	}
 
-	err := NotFoundError(key)
-	return nil, err
+	return nil, etcdErr.NewError(100, "get: "+key)
 }
 
 func (s *Store) Delete(key string, index uint64) ([]byte, error) {
@@ -440,8 +442,7 @@ func (s *Store) internalDelete(key string, index uint64) ([]byte, error) {
 
 		// notify the messager
 		if s.messager != nil && err == nil {
-
-			*s.messager <- string(msg)
+			s.messager <- string(msg)
 		}
 
 		s.addToResponseMap(index, &resp)
@@ -449,8 +450,7 @@ func (s *Store) internalDelete(key string, index uint64) ([]byte, error) {
 		return msg, err
 
 	} else {
-		err := NotFoundError(key)
-		return nil, err
+		return nil, etcdErr.NewError(100, "delete: "+key)
 	}
 }
 
@@ -465,8 +465,7 @@ func (s *Store) TestAndSet(key string, prevValue string, value string, expireTim
 	resp := s.internalGet(key)
 
 	if resp == nil {
-		err := NotFoundError(key)
-		return nil, err
+		return nil, etcdErr.NewError(100, "testandset: "+key)
 	}
 
 	if resp.Value == prevValue {
@@ -476,8 +475,8 @@ func (s *Store) TestAndSet(key string, prevValue string, value string, expireTim
 	} else {
 
 		// If fails, return err
-		err := TestFail(fmt.Sprintf("TestAndSet: %s!=%s", resp.Value, prevValue))
-		return nil, err
+		return nil, etcdErr.NewError(101, fmt.Sprintf("TestAndSet: %s!=%s",
+			resp.Value, prevValue))
 	}
 
 }
@@ -486,7 +485,7 @@ func (s *Store) TestAndSet(key string, prevValue string, value string, expireTim
 // The watchHub will send response to the channel when any key under the prefix
 // changes [since the sinceIndex if given]
 func (s *Store) AddWatcher(prefix string, watcher *Watcher, sinceIndex uint64) error {
-	return s.watcher.addWatcher(prefix, watcher, sinceIndex, s.ResponseStartIndex, s.Index, &s.ResponseMap)
+	return s.watcher.addWatcher(prefix, watcher, sinceIndex, s.ResponseStartIndex, s.Index, s.ResponseMap)
 }
 
 // This function should be created as a go routine to delete the key-value pair
@@ -526,8 +525,7 @@ func (s *Store) monitorExpiration(key string, update chan time.Time, expireTime 
 
 				// notify the messager
 				if s.messager != nil && err == nil {
-
-					*s.messager <- string(msg)
+					s.messager <- string(msg)
 				}
 
 				return
