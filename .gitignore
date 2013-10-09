@@ -23,5 +23,5 @@ _testmain.go
 
 src/
 pkg/
-./etcdctl
+/etcdctl
 release_version.go
