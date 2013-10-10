@@ -8,12 +8,15 @@ import (
 )
 
 var (
-	cluster = flag.String("C", "0.0.0.0:4001", "a list of machine addresses in the cluster")
-	client  = etcd.NewClient()
+	client *etcd.Client
 )
 
 func main() {
+	cluster := ClusterValue{"http://localhost:4001"}
+	flag.Var(&cluster, "C", "a comma seperated list of machine addresses in the cluster e.g. 127.0.0.1:4001,127.0.0.1:4002")
 	flag.Parse()
+
+	client = etcd.NewClient(cluster.GetMachines())
 
 	args := flag.Args()
 
