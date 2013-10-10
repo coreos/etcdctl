@@ -1,6 +1,5 @@
 package log
-
-// Copyright 2013, David Fisher. All rights reserved.
+// Copyright 2013, CoreOS, Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -112,26 +111,25 @@ func JournalSink() Sink {
 	return &journalSink{}
 }
 
-type tryJournalSink struct {
-	j journalSink
-	w writerSink
+type combinedSink struct {
+	sinks []Sink
 }
 
-func (sink *tryJournalSink) Log(fields Fields) {
-	if journal.Enabled() {
-		sink.j.Log(fields)
-	} else {
-		sink.w.Log(fields)
+func (sink *combinedSink) Log(fields Fields) {
+	for _, s := range sink.sinks {
+		s.Log(fields)
 	}
 }
 
-func JournalFallbackSink(out io.Writer, format string, fields []string) Sink {
-	return &tryJournalSink{
-		w: writerSink{
-			out:    out,
-			format: format,
-			fields: fields,
-		},
+func CombinedSink(writer io.Writer, format string, fields []string) Sink {
+	sinks := make([]Sink, 0)
+	sinks = append(sinks, WriterSink(writer, format, fields))
+	if journal.Enabled() {
+		sinks = append(sinks, JournalSink())
+	}
+
+	return &combinedSink{
+		sinks: sinks,
 	}
 }
 

@@ -1,5 +1,5 @@
 package log
-// Copyright 2013, David Fisher. All rights reserved.
+// Copyright 2013, CoreOS, Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,10 +18,9 @@ package log
 
 import (
 	"bitbucket.org/kardianos/osext"
-	"github.com/coreos/go-systemd/journal"
+	"os"
 	"path"
 	"time"
-	"os"
 )
 
 // Logger is user-immutable immutable struct which can log to several outputs
@@ -69,10 +68,5 @@ func NewSimple(sinks ...Sink) *Logger {
 var defaultLogger *Logger
 
 func init() {
-	sinks := make([]Sink, 0)
-	sinks = append(sinks, WriterSink(os.Stdout, BasicFormat, BasicFields))
-	if journal.Enabled() {
-		sinks = append(sinks, JournalSink())
-	}
-	defaultLogger = NewSimple(sinks...)
+	defaultLogger = NewSimple(CombinedSink(os.Stdout, BasicFormat, BasicFields))
 }
