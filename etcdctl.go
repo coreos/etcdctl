@@ -9,12 +9,21 @@ import (
 
 var (
 	client *etcd.Client
+
+	printVersion bool
 )
 
 func main() {
+	flag.BoolVar(&printVersion, "version", false, "print the version and exit")
+
 	cluster := ClusterValue{"http://localhost:4001"}
 	flag.Var(&cluster, "C", "a comma seperated list of machine addresses in the cluster e.g. 127.0.0.1:4001,127.0.0.1:4002")
 	flag.Parse()
+
+	if printVersion {
+		fmt.Println(releaseVersion)
+		os.Exit(0)
+	}
 
 	client = etcd.NewClient(cluster.GetMachines())
 
