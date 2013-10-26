@@ -11,18 +11,21 @@ import (
 var (
 	client       *etcd.Client
 	printVersion bool
-	outputJSON   bool
+	outputFormat string
 	cluster      = ClusterValue{"http://localhost:4001"}
 )
 
 func output(resp *etcd.Response) {
-	if outputJSON {
+	switch outputFormat {
+	case "json":
 		b, err := json.Marshal(resp)
 		if err != nil {
 			panic(err)
 		}
 		fmt.Printf("%s\n", b)
-	} else {
+	case "full":
+		fmt.Printf("%v %v\n", resp.Index, resp.Value)
+	default:
 		fmt.Println(resp.Value)
 	}
 }
@@ -30,7 +33,7 @@ func output(resp *etcd.Response) {
 func main() {
 	flag.BoolVar(&printVersion, "version", false, "print the version and exit")
 	flag.Var(&cluster, "C", "a comma seperated list of machine addresses in the cluster e.g. 127.0.0.1:4001,127.0.0.1:4002")
-	flag.BoolVar(&outputJSON, "json", false, "Output server response in JSON format")
+	flag.StringVar(&outputFormat, "format", "", "Output server response in the given format, either `json` or `full`")
 	flag.Parse()
 
 	if printVersion {
