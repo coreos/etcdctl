@@ -14,6 +14,7 @@ var (
 	outputFormat string
 	debug        bool
 	cluster      = ClusterValue{"http://localhost:4001"}
+	curlChan     chan string
 )
 
 func output(resp *etcd.Response) {
@@ -44,7 +45,9 @@ func main() {
 	}
 
 	if debug {
-		etcd.SetPrintCurl(true)
+		// Making the channel buffered to avoid potential deadlocks
+		curlChan = make(chan string, 10)
+		etcd.SetCurlChan(curlChan)
 	}
 
 	client = etcd.NewClient(cluster.GetMachines())

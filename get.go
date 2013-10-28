@@ -37,6 +37,9 @@ func get(args []string) error {
 	key := args[0]
 	getFlag.Parse(args[1:])
 	resp, err := client.Get(key, *sorted)
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 
 	if err != nil {
 		return err
@@ -57,6 +60,10 @@ func getAll(args []string) error {
 	key := args[0]
 	getFlag.Parse(args[1:])
 	resp, err := client.GetAll(key, *sorted)
+	if debug {
+		fmt.Println(<-curlChan)
+	}
+
 	if err != nil {
 		return err
 	}
