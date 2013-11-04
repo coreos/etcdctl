@@ -30,11 +30,13 @@ func compareAndSwap(args []string) error {
 	compareAndSwapFlag.Parse(args[2:])
 	resp, err := client.CompareAndSwap(key, value,
 		*compareAndSwapTtl, *compareAndSwapPvalue, *compareAndSwapPindex)
-
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(resp.Value)
+	output(resp)
 	return nil
 }

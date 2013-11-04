@@ -42,10 +42,13 @@ func set(args []string) error {
 	value := args[1]
 	setFlag.Parse(args[2:])
 	resp, err := client.Set(key, value, uint64(*ttl))
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp.Value)
+	output(resp)
 
 	return nil
 }
@@ -55,10 +58,13 @@ func create(args []string) error {
 	value := args[1]
 	setFlag.Parse(args[2:])
 	resp, err := client.Create(key, value, uint64(*ttl))
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp.Value)
+	output(resp)
 
 	return nil
 }
@@ -68,10 +74,13 @@ func update(args []string) error {
 	value := args[1]
 	setFlag.Parse(args[2:])
 	resp, err := client.Update(key, value, uint64(*ttl))
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp.Value)
+	output(resp)
 
 	return nil
 }
@@ -80,10 +89,13 @@ func setDir(args []string) error {
 	key := args[0]
 	setFlag.Parse(args[1:])
 	resp, err := client.SetDir(key, uint64(*ttl))
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp.Value)
+	output(resp)
 
 	return nil
 }
@@ -92,10 +104,13 @@ func createDir(args []string) error {
 	key := args[0]
 	setFlag.Parse(args[1:])
 	resp, err := client.CreateDir(key, uint64(*ttl))
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp.Value)
+	output(resp)
 
 	return nil
 }
@@ -104,10 +119,13 @@ func updateDir(args []string) error {
 	key := args[0]
 	setFlag.Parse(args[1:])
 	resp, err := client.UpdateDir(key, uint64(*ttl))
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp.Value)
+	output(resp)
 
 	return nil
 }

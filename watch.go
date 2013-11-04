@@ -49,15 +49,21 @@ func watch(args []string) error {
 
 		for {
 			resp := <-receiver
-			fmt.Println(resp.Action, " ", resp.Key, " ", resp.Value)
+			if debug {
+				fmt.Println(<-curlChan)
+			}
+			output(resp)
 		}
 
 	} else {
 		resp, err := client.Watch(key, uint64(*index), nil, nil)
+		if debug {
+			fmt.Println(<-curlChan)
+		}
 		if err != nil {
 			return err
 		}
-		fmt.Println(resp.Action, " ", resp.Key, " ", resp.Value)
+		output(resp)
 	}
 
 	return nil
@@ -85,15 +91,21 @@ func watchAll(args []string) error {
 
 		for {
 			resp := <-receiver
-			fmt.Println(resp.Action, " ", resp.Key, " ", resp.Value)
+			if debug {
+				fmt.Println(<-curlChan)
+			}
+			output(resp)
 		}
 
 	} else {
 		resp, err := client.WatchAll(key, uint64(*index), nil, nil)
+		if debug {
+			fmt.Println(<-curlChan)
+		}
 		if err != nil {
 			return err
 		}
-		fmt.Println(resp.Action, " ", resp.Key, " ", resp.Value)
+		output(resp)
 	}
 
 	return nil

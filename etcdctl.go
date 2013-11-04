@@ -26,8 +26,8 @@ func output(resp *etcd.Response) {
 		}
 		fmt.Printf("%s\n", b)
 	case "full":
-		fmt.Printf("%v %v\n", resp.Index, resp.Value)
-	default:
+		fmt.Printf("Index: %v\nValue: %v\n", resp.Index, resp.Value)
+	case "value-only":
 		fmt.Println(resp.Value)
 	}
 }
@@ -35,7 +35,7 @@ func output(resp *etcd.Response) {
 func main() {
 	flag.BoolVar(&printVersion, "version", false, "print the version and exit")
 	flag.Var(&cluster, "C", "a comma seperated list of machine addresses in the cluster e.g. 127.0.0.1:4001,127.0.0.1:4002")
-	flag.StringVar(&outputFormat, "format", "", "Output server response in the given format, either `json` or `full`")
+	flag.StringVar(&outputFormat, "format", "json", "Output server response in the given format, either `json`, `full`, or `value-only`")
 	flag.BoolVar(&debug, "debug", false, "Output cURL commands which can be used to re-produce the request")
 	flag.Parse()
 
@@ -55,6 +55,11 @@ func main() {
 	args := flag.Args()
 
 	if len(args) == 0 {
+		fmt.Println("Usage: etcdctl [flags] [command] [flags for command]\n")
+		fmt.Println("Available flags include:\n")
+		flag.PrintDefaults()
+		fmt.Println()
+		fmt.Println(`To see the usage for a specific command, run "etcdctl [command]"`)
 		os.Exit(1)
 	}
 
@@ -70,7 +75,6 @@ func main() {
 	commandArgs := args[1:]
 
 	if len(commandArgs) > command.maxArgs || len(commandArgs) < command.minArgs {
-		fmt.Println("wrong arguments provided")
 		fmt.Println(command.usage)
 		os.Exit(MalformedEtcdctlArguments)
 	}

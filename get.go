@@ -68,9 +68,7 @@ func getAll(args []string) error {
 		return err
 	}
 
-	if resp.Value != "" {
-		fmt.Println(resp.Value)
-	}
+	output(resp)
 
 	return nil
 }

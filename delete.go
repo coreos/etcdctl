@@ -16,10 +16,13 @@ func delete(args []string) error {
 	key := args[0]
 
 	resp, err := client.Delete(key)
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp.PrevValue)
+	output(resp)
 
 	return nil
 }
@@ -28,10 +31,13 @@ func deleteAll(args []string) error {
 	key := args[0]
 
 	resp, err := client.DeleteAll(key)
+	if debug {
+		fmt.Println(<-curlChan)
+	}
 	if err != nil {
 		return err
 	}
-	fmt.Println(resp.PrevValue)
+	output(resp)
 
 	return nil
 }
