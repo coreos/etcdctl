@@ -8,14 +8,14 @@ import (
 const CompareAndSwapUsage = `usage: etcdctl [etcd flags] compareAndSwap <key> <value> [testAndSet flags]
 either prevValue or prevIndex needs to be given
 special flags: --ttl to set a key with ttl
-			   --pvalue to set the previous value
-			   --pindex to set the previous index`
+			   --prevValue to set the previous value
+			   --prevIndex to set the previous index`
 
 var (
 	compareAndSwapFlag   = flag.NewFlagSet("testAndSet", flag.ExitOnError)
 	compareAndSwapTtl    = compareAndSwapFlag.Uint64("ttl", 0, "ttl of the key")
-	compareAndSwapPvalue = compareAndSwapFlag.String("pvalue", "", "previous value")
-	compareAndSwapPindex = compareAndSwapFlag.Uint64("pindex", 0, "previous index")
+	compareAndSwapPvalue = compareAndSwapFlag.String("prevValue", "", "previous value")
+	compareAndSwapPindex = compareAndSwapFlag.Uint64("prevIndex", 0, "previous index")
 )
 
 func init() {
