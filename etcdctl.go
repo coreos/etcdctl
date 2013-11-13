@@ -59,7 +59,17 @@ func main() {
 		fmt.Println("Available flags include:\n")
 		flag.PrintDefaults()
 		fmt.Println()
-		fmt.Println(`To see the usage for a specific command, run "etcdctl [command]"`)
+		fmt.Println(`Common usecases:
+  get <key>                     read the value of a key
+  set <key> <value>             write to a key
+  update <key> <value>          update a key
+  create <key> <value>          create a key
+  delete <key>                  delete a key
+  watch <key>                   watch a key for changes
+  watchAll <key>                watch for changes under the given path
+  compareAndSwap <key> <value> --prevvalue=<prevvalue>  compare with prevvalue and swap it with value`)
+		fmt.Println()
+		fmt.Println(`To see the full usage for a specific command, run "etcdctl [command]"`)
 		os.Exit(1)
 	}
 
