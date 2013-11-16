@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/coreos/go-etcd/etcd"
 	"os"
+	"sort"
 )
 
 var (
@@ -59,17 +60,21 @@ func main() {
 		fmt.Println("Available flags include:\n")
 		flag.PrintDefaults()
 		fmt.Println()
-		fmt.Println(`Common usecases:
-  get <key>                     read the value of a key
-  set <key> <value>             write to a key
-  update <key> <value>          update a key
-  create <key> <value>          create a key
-  delete <key>                  delete a key
-  watch <key>                   watch a key for changes
-  watchAll <key>                watch for changes under the given path
-  compareAndSwap <key> <value> --prevvalue=<prevvalue>  compare with prevvalue and swap it with value`)
+		fmt.Println("Available commands:")
+		fmt.Println()
+		slice := make([]string, len(commands))
+		i := 0
+		for k, _ := range commands {
+			slice[i] = k
+			i++
+		}
+		sort.Strings(slice)
+		for _, c := range slice {
+			fmt.Println(c)
+		}
 		fmt.Println()
 		fmt.Println(`To see the full usage for a specific command, run "etcdctl [command]"`)
+		fmt.Println()
 		os.Exit(1)
 	}
 
