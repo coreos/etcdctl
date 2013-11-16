@@ -27,7 +27,7 @@ func output(resp *etcd.Response) {
 		}
 		fmt.Printf("%s\n", b)
 	case "full":
-		fmt.Printf("Index: %v\nValue: %v\n", resp.Index, resp.Value)
+		fmt.Printf("Index: %v\nValue: %v\n", resp.ModifiedIndex, resp.Value)
 	case "value-only":
 		fmt.Println(resp.Value)
 	}
