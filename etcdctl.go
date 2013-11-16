@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/coreos/go-etcd/etcd"
 	"os"
+	"sort"
 )
 
 var (
@@ -26,7 +27,7 @@ func output(resp *etcd.Response) {
 		}
 		fmt.Printf("%s\n", b)
 	case "full":
-		fmt.Printf("Index: %v\nValue: %v\n", resp.Index, resp.Value)
+		fmt.Printf("Index: %v\nValue: %v\n", resp.ModifiedIndex, resp.Value)
 	case "value-only":
 		fmt.Println(resp.Value)
 	}
@@ -59,7 +60,21 @@ func main() {
 		fmt.Println("Available flags include:\n")
 		flag.PrintDefaults()
 		fmt.Println()
-		fmt.Println(`To see the usage for a specific command, run "etcdctl [command]"`)
+		fmt.Println("Available commands:")
+		fmt.Println()
+		slice := make([]string, len(commands))
+		i := 0
+		for k, _ := range commands {
+			slice[i] = k
+			i++
+		}
+		sort.Strings(slice)
+		for _, c := range slice {
+			fmt.Println(c)
+		}
+		fmt.Println()
+		fmt.Println(`To see the full usage for a specific command, run "etcdctl [command]"`)
+		fmt.Println()
 		os.Exit(1)
 	}
 
