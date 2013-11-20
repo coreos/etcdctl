@@ -5,14 +5,14 @@ import (
 	"fmt"
 )
 
-const CompareAndSwapUsage = `usage: etcdctl [etcd flags] compareAndSwap <key> <value> [testAndSet flags]
+const CompareAndSwapUsage = `usage: etcdctl [etcd flags] compareAndSwap <key> <value> [compareAndSwap flags]
 either prevvalue or previndex needs to be given
 special flags: --ttl to set a key with ttl
 			   --prevvalue to set the previous value
 			   --previndex to set the previous index`
 
 var (
-	compareAndSwapFlag   = flag.NewFlagSet("testAndSet", flag.ExitOnError)
+	compareAndSwapFlag   = flag.NewFlagSet("compareAndSwap", flag.ExitOnError)
 	compareAndSwapTtl    = compareAndSwapFlag.Uint64("ttl", 0, "ttl of the key")
 	compareAndSwapPvalue = compareAndSwapFlag.String("prevvalue", "", "previous value")
 	compareAndSwapPindex = compareAndSwapFlag.Uint64("previndex", 0, "previous index")
