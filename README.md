@@ -3,9 +3,11 @@ etcdctl
 
 [![Build Status](https://travis-ci.org/coreos/etcdctl.png)](https://travis-ci.org/coreos/etcdctl)
 
-`etcdctl` is a command line client for [etcd][etcd]. It can be used in scripts or for administrators to explore an etcd cluster.
+`etcdctl` is a command line client for [etcd][etcd].
+It can be used in scripts or for administrators to explore an etcd cluster.
 
 [etcd]: https://github.com/coreos/etcd
+
 
 ## Getting etcdctl
 
@@ -19,82 +21,137 @@ You can also build etcdctl from source:
 ./build
 ```
 
+
 ## Usage
 
-### Key Value Storage
+### Setting Key Values
 
-Setting a key on `/foo/bar`:
+Set a value on the `/foo/bar` key:
 
 ```
-etcdctl set /foo/bar "Hello world"
+$ etcdctl set /foo/bar "Hello world"
 Hello world
 ```
 
-Getting a key:
+Set a value on the `/foo/bar` key with a value that expires in 60 seconds:
 
 ```
-etcdctl get /foo/bar
+$ etcdctl set /foo/bar "Hello world" --ttl 60
 Hello world
 ```
 
-Deleting a key:
+Conditionally set a value on `/foo/bar` if the previous value was "Hello world":
 
 ```
-etcdctl delete /foo/bar
+$ etcdctl set /foo/bar "Goodbye world" --swap-with-value "Hello world"
+Goodbye world
+```
+
+Conditionally set a value on `/foo/bar` if the previous etcd index was 12:
+
+```
+$ etcdctl set /foo/bar "Goodbye world" --swap-with-index 12
+Goodbye world
+```
+
+Create a new key `/foo/bar`, only if the key did not previously exist:
+
+```
+$ etcdctl create /foo/new_bar "Hello world"
 Hello world
 ```
 
-Tailing a key:
+Update an existing key `/foo/bar`, only if the key already existed:
 
 ```
-etcdctl watch /foo/bar -f
+$ etcdctl update /foo/bar "Hola mundo"
+Hola mundo
+```
+
+Create or update a directory called `/mydir`:
+
+```
+$ etcdctl setDir /mydir
+```
+
+
+### Retrieving a key value
+
+Get the current value for a single key in the local etcd node:
+
+```
+$ etcdctl get /foo/bar
+Hello world
+```
+
+Get the current value for a key within the cluster:
+
+```
+$ etcdctl get /foo/bar --consistent
+Hello world
+```
+
+Get the value of a key and all child keys.
+
+```
+$ etcdctl get /path/to/mydir --recursive
+...
+```
+
+
+### Deleting a key
+
+Delete a key:
+
+```
+$ etcdctl delete /foo/bar
+```
+
+Recursively delete a key and all child keys:
+
+```
+$ etcdctl delete /path/to/dir --consistent
+```
+
+
+### Watching for changes
+
+Watch for only the next change on a key:
+
+```
+$ etcdctl watch /foo/bar
+Hello world
+```
+
+Continuously watch a key:
+
+```
+$ etcdctl watch /foo/bar --forever
 Hello world
 .... client hangs forever until ctrl+C printing values as key change
 ```
 
-### Sets
-
-`etcdctl` implements _sets_ on top of the key-value store that etcd
-provides. These are useful for storing lists of unique items. A common
-use-case is servers of a particular type that register themselves under
-an etcd key, so that they can be detected and used by clients.
-
-Adding members to a set:
+Continuously watch a key, starting with a given etcd index:
 
 ```
-etcdctl sadd /queues amqp://user:password@rabbitmq1
-amqp://user:password@rabbitmq1
-etcdctl sadd /queues amqp://user:password@rabbitmq2 --ttl=60
-amqp://user:password@rabbitmq2
-```
-    
-List all members:
-
-```
-etcdctl smembers /queues
-amqp://user:password@rabbitmq1
-amqp://user:password@rabbitmq2
+$ etcdctl watch /foo/bar --forever --index 12
+Hello world
+.... client hangs forever until ctrl+C printing values as key change
 ```
 
-To delete a member:
-
-```
-etcdctl sdel /queues amqp://user:password@rabbitmq1
-```
 
 ## Return Codes
 
-0	Success
+The following exit codes can be returned from etcdctl:
 
-1	Malformed etcdctl arguments
-
-2	Failed to connect to host
-
-3	Failed to auth (client cert rejected, ca validation failure, etc)
-
-4	400 error from etcd
-
-5	500 error from etcd
+```
+0    Success
+1    Malformed etcdctl arguments
+2    Failed to connect to host
+3    Failed to auth (client cert rejected, ca validation failure, etc)
+4    400 error from etcd
+5    500 error from etcd
+```
 
 ## Project Details
 

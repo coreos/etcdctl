@@ -1,4 +1,4 @@
-package main
+package command
 
 const (
 	SUCCESS = iota
