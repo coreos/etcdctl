@@ -8,16 +8,16 @@ KEY=config
 
 # Use the IFS to parse the response and split on newline
 IFS=$'\n'
-set $(./etcdctl -o extended get ${KEY})
 
 # Setup the initial index to run everything once
-nextindex=$2
+set $(./etcdctl -o extended get ${KEY})
+index=$2
 
 while true; do
-	set $(./etcdctl -o extended watch ${KEY} --index $nextindex)
+	set $(./etcdctl -o extended watch ${KEY} --after-index $index)
 
 	config=$1
-	nextindex=`expr $2 + 1`
+	index=$2
 
 	# Print out the example command line to execute
 	echo "echo ${config} | config-update"
