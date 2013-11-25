@@ -21,7 +21,7 @@ func NewWatchCommand() cli.Command {
 			cli.BoolFlag{"recursive", "returns all values for key and child keys"},
 		},
 		Action: func(c *cli.Context) {
-			rawhandle(c, watchCommandFunc)
+			handle(c, watchCommandFunc)
 		},
 	}
 }
