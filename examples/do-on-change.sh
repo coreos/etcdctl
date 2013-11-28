@@ -6,18 +6,13 @@
 # The key to watch
 KEY=config
 
-# Use the IFS to parse the response and split on newline
-IFS=$'\n'
-
-# Setup the initial index to run everything once
-set $(./etcdctl -o extended get ${KEY})
-index=$2
+out=$(./etcdctl -o extended get ${KEY} | tail -n 1)
+index=${out##*# index:}
 
 while true; do
-	set $(./etcdctl -o extended watch ${KEY} --after-index $index)
-
-	config=$1
-	index=$2
+	out=$(./etcdctl -o extended watch ${KEY} --after-index $index)
+	config=${out%?# index:*}
+	index=${out##*# index:}
 
 	# Print out the example command line to execute
 	echo "echo ${config} | config-update"
