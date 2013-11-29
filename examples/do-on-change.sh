@@ -6,15 +6,16 @@
 # The key to watch
 KEY=config
 
-out=$(./etcdctl -o extended get ${KEY} | tail -n 1)
-index=${out##*# index:}
+index_re='s/^# modified-index: \(.*\)/\1/p'
+
+index=$(./etcdctl -o extended get ${KEY} | sed -n -e "${index_re}")
 
 while true; do
-	out=$(./etcdctl -o extended watch ${KEY} --after-index $index)
-	config=${out%?# index:*}
-	index=${out##*# index:}
+	out=$(./etcdctl -o extended watch ${KEY} --after-index ${index})
+	config=$(echo "${out}" | grep -v "^#")
+	index=$(echo "${out}" | sed -n -e "${index_re}")
 
 	# Print out the example command line to execute
-	echo "echo ${config} | config-update"
+	echo "echo \"${config}\" | config-update"
 done
 

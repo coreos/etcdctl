@@ -65,7 +65,8 @@ func printResponse(resp *etcd.Response, format string) {
 	case "extended":
 		fmt.Println(resp.Value)
 		// This style emulates tools like getfacl
-		fmt.Println("# index: ", resp.ModifiedIndex)
+		fmt.Println("# modified-index:", resp.ModifiedIndex)
+		fmt.Println("# ttl:", resp.TTL)
 	case "json":
 		b, err := json.Marshal(resp)
 		if err != nil {
