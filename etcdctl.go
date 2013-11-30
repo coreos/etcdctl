@@ -27,6 +27,7 @@ func main() {
 		command.NewUpdateCommand(),
 		command.NewUpdateDirCommand(),
 		command.NewWatchCommand(),
+		command.NewExecWatchCommand(),
 	}
 	app.Run(os.Args)
 }

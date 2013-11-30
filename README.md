@@ -139,6 +139,17 @@ Hello world
 .... client hangs forever until ctrl+C printing values as key change
 ```
 
+Continuously watch a key and exec a program:
+
+```
+$ etcdctl exec-watch /foo/bar -- sh -c "env | grep ETCD"
+ETCD_VALUE=My configuration stuff
+ETCD_MODIFIED_INDEX=1999
+ETCD_KEY=/foo/bar
+ETCD_VALUE=My new configuration stuff
+ETCD_MODIFIED_INDEX=2000
+ETCD_KEY=/foo/bar
+```
 
 ## Return Codes
 
