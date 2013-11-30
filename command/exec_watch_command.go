@@ -93,8 +93,8 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 }
 
 func environResponse(resp *etcd.Response, env []string) []string {
-	env = append(env, "ETCD_MODIFIED_INDEX="+fmt.Sprintf("%d", resp.ModifiedIndex))
-	env = append(env, "ETCD_KEY="+resp.Key)
-	env = append(env, "ETCD_VALUE="+resp.Value)
+	env = append(env, "ETCD_WATCH_MODIFIED_INDEX="+fmt.Sprintf("%d", resp.ModifiedIndex))
+	env = append(env, "ETCD_WATCH_KEY="+resp.Key)
+	env = append(env, "ETCD_WATCH_VALUE="+resp.Value)
 	return env
 }
