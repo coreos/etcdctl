@@ -72,9 +72,39 @@ func (c *Context) GlobalIntSlice(name string) []int {
 	return lookupIntSlice(name, c.globalSet)
 }
 
+type Args []string
+
 // Returns the command line arguments associated with the context.
-func (c *Context) Args() []string {
-	return c.flagSet.Args()
+func (c *Context) Args() Args {
+	args := Args(c.flagSet.Args())
+	return args
+}
+
+// Returns the nth argument, or else a blank string
+func (a Args) Get(n int) string {
+	if len(a) > n {
+		return a[n]
+	}
+	return ""
+}
+
+// Returns the first argument, or else a blank string
+func (a Args) First() string {
+	return a.Get(0)
+}
+
+// Return the rest of the arguments (not the first one)
+// or else an empty string slice
+func (a Args) Tail() []string {
+	if len(a) >= 2 {
+		return []string(a)[1:]
+	}
+	return []string{}
+}
+
+// Checks if there are any arguments present
+func (a Args) Present() bool {
+	return len(a) != 0
 }
 
 func lookupInt(name string, set *flag.FlagSet) int {
