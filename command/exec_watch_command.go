@@ -18,7 +18,6 @@ func NewExecWatchCommand() cli.Command {
 		Name:  "exec-watch",
 		Usage: "watch a key for changes and exec an executable",
 		Flags: []cli.Flag{
-			cli.IntFlag{"index", 0, "watch from the given index"},
 			cli.IntFlag{"after-index", 0, "watch after the given index"},
 		},
 		Action: func(c *cli.Context) {
@@ -38,15 +37,7 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 		return nil, errors.New("Key and command to exec required")
 	}
 	key := args[argsLen-1]
-	afterIndex := c.Int("after-index")
-	index := c.Int("index")
-
-
-	if (index != 0) && (afterIndex != 0) {
-		return nil, errors.New("index and after-index cannot be used together")
-	} else if (index == 0) && (afterIndex != 0) {
-		index = afterIndex + 1
-	}
+	index := c.Int("after-index") + 1
 
 	sigch := make(chan os.Signal, 1)
 	signal.Notify(sigch, os.Interrupt)

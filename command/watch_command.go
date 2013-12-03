@@ -17,7 +17,6 @@ func NewWatchCommand() cli.Command {
 		Usage: "watch a key for changes",
 		Flags: []cli.Flag{
 			cli.BoolFlag{"forever", "forever watch a key until CTRL+C"},
-			cli.IntFlag{"index", 0, "watch from the given index"},
 			cli.IntFlag{"after-index", 0, "watch after the given index"},
 			cli.BoolFlag{"recursive", "returns all values for key and child keys"},
 		},
@@ -35,14 +34,7 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 	key := c.Args()[0]
 	recursive := c.Bool("recursive")
 	forever := c.Bool("forever")
-	afterIndex := c.Int("after-index")
-	index := c.Int("index")
-
-	if (index != 0) && (afterIndex != 0) {
-		return nil, errors.New("index and after-index cannot be used together")
-	} else if (index == 0) && (afterIndex != 0) {
-		index = afterIndex + 1
-	}
+	index := c.Int("after-index") + 1
 
 	if forever {
 		sigch := make(chan os.Signal, 1)
