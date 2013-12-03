@@ -11,7 +11,13 @@ import (
 
 type handlerFunc func(*cli.Context, *etcd.Client) (*etcd.Response, error)
 
-var curlChan = make(chan string, 10)
+// dumpCURL blindly dumps all curl output to os.Stderr
+func dumpCURL(client *etcd.Client) {
+	client.OpenCURL()
+	for {
+		fmt.Fprintln(os.Stderr, client.RecvCURL())
+	}
+}
 
 // rawhandle wraps the command function handlers and sets up the
 // environment but performs no output formatting.
@@ -19,8 +25,9 @@ func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 	peers := c.GlobalStringSlice("C")
 	client := etcd.NewClient(peers)
 
-	// Set channel to receive cURL output.
-	etcd.SetCurlChan(curlChan)
+	if c.GlobalBool("debug") {
+		go dumpCURL(client)
+	}
 
 	// Sync cluster.    
 	if !client.SyncCluster() {
@@ -36,14 +43,6 @@ func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 // into a client and to properly format the response objects.
 func handle(c *cli.Context, fn handlerFunc) {
 	resp, err := rawhandle(c, fn)
-
-	if c.GlobalBool("debug") {
-		select {
-		case s := <-curlChan:
-			fmt.Fprintln(os.Stderr, s)
-		default:
-		}
-	}
 
 	// Print error and exit, if necessary.
 	if err != nil {
