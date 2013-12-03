@@ -41,9 +41,5 @@ func getCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error)
 	}
 
 	// Retrieve the value from the server.
-	if recursive {
-		return client.GetAll(key, sorted)
-	} else {
-		return client.Get(key, sorted)
-	}
+	return client.Get(key, sorted, recursive)
 }

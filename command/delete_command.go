@@ -28,9 +28,5 @@ func deleteCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, err
 	}
 	key := c.Args()[0]
 	recursive := c.Bool("recursive")
-	if recursive {
-		return client.DeleteAll(key)
-	} else {
-		return client.Delete(key)
-	}
+	return client.Delete(key, recursive)
 }

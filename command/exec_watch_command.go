@@ -50,13 +50,10 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 	}()
 
 	receiver := make(chan *etcd.Response)
-	go client.Watch(key, uint64(index), receiver, stop)
+	go client.Watch(key, uint64(index), false, receiver, stop)
 
 	for {
 		resp := <-receiver
-		if c.GlobalBool("debug") {
-			fmt.Fprintln(os.Stderr, <-curlChan)
-		}
 		cmd := exec.Command(args[0], args[1:argsLen-1]...)
 		cmd.Env = environResponse(resp, os.Environ())
 

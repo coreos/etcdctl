@@ -48,37 +48,23 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 		}()
 
 		receiver := make(chan *etcd.Response)
-		if recursive {
-			go client.WatchAll(key, uint64(index), receiver, stop)
-		} else {
-			go client.Watch(key, uint64(index), receiver, stop)
-		}
+		go client.Watch(key, uint64(index), recursive, receiver, stop)
 
 		for {
 			resp := <-receiver
-			if c.GlobalBool("debug") {
-				fmt.Fprintln(os.Stderr, <-curlChan)
-			}
 			printResponse(resp, c.GlobalString("output"))
 		}
 
 	} else {
 		var resp *etcd.Response
 		var err error
-		if recursive {
-			resp, err = client.WatchAll(key, uint64(index), nil, nil)
-		} else {
-			resp, err = client.Watch(key, uint64(index), nil, nil)
-		}
+		resp, err = client.Watch(key, uint64(index), recursive, nil, nil)
 
 		if err != nil {
 			fmt.Println("Error:", err)
 			os.Exit(ErrorFromEtcd)
 		}
 
-		if c.GlobalBool("debug") {
-			fmt.Fprintln(os.Stderr, <-curlChan)
-		}
 		if err != nil {
 			return nil, err
 		}
