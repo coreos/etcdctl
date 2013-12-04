@@ -54,7 +54,7 @@ type StringSliceFlag struct {
 }
 
 func (f StringSliceFlag) String() string {
-	return fmt.Sprintf("%s '%v'\t%v", prefixFor(f.Name), f.Name, "-"+f.Name+" option -"+f.Name+" option", f.Usage)
+	return fmt.Sprintf("%s%s %v\t`%v` %s", prefixFor(f.Name), f.Name, f.Value, "-"+f.Name+" option -"+f.Name+" option", f.Usage)
 }
 
 func (f StringSliceFlag) Apply(set *flag.FlagSet) {
@@ -166,6 +166,26 @@ func (f IntFlag) Apply(set *flag.FlagSet) {
 }
 
 func (f IntFlag) getName() string {
+	return f.Name
+}
+
+type Float64Flag struct {
+	Name  string
+	Value float64
+	Usage string
+}
+
+func (f Float64Flag) String() string {
+	return fmt.Sprintf("%s '%v'\t%v", prefixedNames(f.Name), f.Value, f.Usage)
+}
+
+func (f Float64Flag) Apply(set *flag.FlagSet) {
+	eachName(f.Name, func(name string) {
+		set.Float64(name, f.Value, f.Usage)
+	})
+}
+
+func (f Float64Flag) getName() string {
 	return f.Name
 }
 

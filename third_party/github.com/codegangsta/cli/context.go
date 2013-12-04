@@ -27,6 +27,11 @@ func (c *Context) Int(name string) int {
 	return lookupInt(name, c.flagSet)
 }
 
+// Looks up the value of a local float64 flag, returns 0 if no int flag exists
+func (c *Context) Float64(name string) float64 {
+	return lookupFloat64(name, c.flagSet)
+}
+
 // Looks up the value of a local bool flag, returns false if no bool flag exists
 func (c *Context) Bool(name string) bool {
 	return lookupBool(name, c.flagSet)
@@ -72,15 +77,58 @@ func (c *Context) GlobalIntSlice(name string) []int {
 	return lookupIntSlice(name, c.globalSet)
 }
 
+type Args []string
+
 // Returns the command line arguments associated with the context.
-func (c *Context) Args() []string {
-	return c.flagSet.Args()
+func (c *Context) Args() Args {
+	args := Args(c.flagSet.Args())
+	return args
+}
+
+// Returns the nth argument, or else a blank string
+func (a Args) Get(n int) string {
+	if len(a) > n {
+		return a[n]
+	}
+	return ""
+}
+
+// Returns the first argument, or else a blank string
+func (a Args) First() string {
+	return a.Get(0)
+}
+
+// Return the rest of the arguments (not the first one)
+// or else an empty string slice
+func (a Args) Tail() []string {
+	if len(a) >= 2 {
+		return []string(a)[1:]
+	}
+	return []string{}
+}
+
+// Checks if there are any arguments present
+func (a Args) Present() bool {
+	return len(a) != 0
 }
 
 func lookupInt(name string, set *flag.FlagSet) int {
 	f := set.Lookup(name)
 	if f != nil {
 		val, err := strconv.Atoi(f.Value.String())
+		if err != nil {
+			return 0
+		}
+		return val
+	}
+
+	return 0
+}
+
+func lookupFloat64(name string, set *flag.FlagSet) float64 {
+	f := set.Lookup(name)
+	if f != nil {
+		val, err := strconv.ParseFloat(f.Value.String(), 64)
 		if err != nil {
 			return 0
 		}
