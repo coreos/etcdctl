@@ -51,12 +51,18 @@ func handle(c *cli.Context, fn handlerFunc) {
 	}
 
 	if resp != nil {
-		printResponse(resp, c.GlobalString("output"))
+		printKey(resp, c.GlobalString("output"))
 	}
 }
 
-// printResponse writes the etcd response to STDOUT in the given format.
-func printResponse(resp *etcd.Response, format string) {
+// printKey writes the etcd response to STDOUT in the given format.
+func printKey(resp *etcd.Response, format string) {
+	// printKey is only for keys, error on directories
+	if resp.Node.Dir == true {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("%s: Is a directory", resp.Node.Key))
+		os.Exit(1)
+	}
+
 	// Format the result.
 	switch format {
 	case "simple":

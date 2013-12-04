@@ -56,7 +56,7 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 
 		for {
 			resp := <-receiver
-			printResponse(resp, c.GlobalString("output"))
+			printKey(resp, c.GlobalString("output"))
 		}
 
 	} else {
@@ -72,7 +72,7 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 		if err != nil {
 			return nil, err
 		}
-		printResponse(resp, c.GlobalString("output"))
+		printKey(resp, c.GlobalString("output"))
 	}
 
 	return nil, nil
