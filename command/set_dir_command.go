@@ -16,7 +16,7 @@ func NewSetDirCommand() cli.Command {
 			cli.IntFlag{"ttl", 0, "key time-to-live"},
 		},
 		Action: func(c *cli.Context) {
-			handle(c, setDirCommandFunc)
+			handleKey(c, setDirCommandFunc)
 		},
 	}
 }

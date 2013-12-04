@@ -16,7 +16,7 @@ func NewCreateCommand() cli.Command {
 			cli.IntFlag{"ttl", 0, "key time-to-live"},
 		},
 		Action: func(c *cli.Context) {
-			handle(c, createCommandFunc)
+			handleKey(c, createCommandFunc)
 		},
 	}
 }

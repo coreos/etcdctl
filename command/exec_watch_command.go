@@ -21,7 +21,7 @@ func NewExecWatchCommand() cli.Command {
 			cli.IntFlag{"after-index", 0, "watch after the given index"},
 		},
 		Action: func(c *cli.Context) {
-			handle(c, execWatchCommandFunc)
+			handleKey(c, execWatchCommandFunc)
 		},
 	}
 }

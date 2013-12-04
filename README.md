@@ -99,6 +99,20 @@ $ etcdctl get /path/to/mydir --recursive
 ```
 
 
+### Listing a directory
+
+Explore the keyspace using the `ls` command
+
+```
+$ etcdctl ls
+/akey
+/adir
+$ etcdctl ls /adir
+/adir/key1
+/adir/key2
+```
+
+
 ### Deleting a key
 
 Delete a key:

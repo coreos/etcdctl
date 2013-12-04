@@ -10,6 +10,7 @@ import (
 )
 
 type handlerFunc func(*cli.Context, *etcd.Client) (*etcd.Response, error)
+type printFunc func(*etcd.Response, string)
 
 // dumpCURL blindly dumps all curl output to os.Stderr
 func dumpCURL(client *etcd.Client) {
@@ -39,9 +40,9 @@ func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 	return fn(c, client)
 }
 
-// handle wraps the command function handlers to parse global flags
+// handlePrint wraps the command function handlers to parse global flags
 // into a client and to properly format the response objects.
-func handle(c *cli.Context, fn handlerFunc) {
+func handlePrint(c *cli.Context, fn handlerFunc, pFn printFunc) {
 	resp, err := rawhandle(c, fn)
 
 	// Print error and exit, if necessary.
@@ -51,8 +52,13 @@ func handle(c *cli.Context, fn handlerFunc) {
 	}
 
 	if resp != nil {
-		printKey(resp, c.GlobalString("output"))
+		pFn(resp, c.GlobalString("output"))
 	}
+}
+
+// handleKey handles a request that wants to do operations on a single key.
+func handleKey(c *cli.Context, fn handlerFunc) {
+	handlePrint(c, fn, printKey)
 }
 
 // printKey writes the etcd response to STDOUT in the given format.
