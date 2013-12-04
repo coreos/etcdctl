@@ -34,7 +34,11 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 	key := c.Args()[0]
 	recursive := c.Bool("recursive")
 	forever := c.Bool("forever")
-	index := c.Int("after-index") + 1
+
+	index := 0
+	if c.Int("after-index") != 0 {
+		index = c.Int("after-index") + 1
+	}
 
 	if forever {
 		sigch := make(chan os.Signal, 1)
