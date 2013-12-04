@@ -18,7 +18,7 @@ func NewSetCommand() cli.Command {
 			cli.IntFlag{"swap-with-index", 0, "previous index"},
 		},
 		Action: func(c *cli.Context) {
-			handle(c, setCommandFunc)
+			handleKey(c, setCommandFunc)
 		},
 	}
 }

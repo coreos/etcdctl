@@ -16,7 +16,7 @@ func NewDeleteCommand() cli.Command {
 			cli.BoolFlag{"recursive", "deletes the key and all child keys"},
 		},
 		Action: func(c *cli.Context) {
-			handle(c, deleteCommandFunc)
+			handleKey(c, deleteCommandFunc)
 		},
 	}
 }

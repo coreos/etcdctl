@@ -18,7 +18,7 @@ func NewGetCommand() cli.Command {
 			cli.BoolFlag{"recursive", "returns all values for key and child keys"},
 		},
 		Action: func(c *cli.Context) {
-			handle(c, getCommandFunc)
+			handleKey(c, getCommandFunc)
 		},
 	}
 }

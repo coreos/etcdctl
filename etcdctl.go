@@ -22,6 +22,7 @@ func main() {
 		command.NewCreateDirCommand(),
 		command.NewDeleteCommand(),
 		command.NewGetCommand(),
+		command.NewLsCommand(),
 		command.NewSetCommand(),
 		command.NewSetDirCommand(),
 		command.NewUpdateCommand(),
