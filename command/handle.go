@@ -60,14 +60,14 @@ func printResponse(resp *etcd.Response, format string) {
 	// Format the result.
 	switch format {
 	case "simple":
-		fmt.Println(resp.Value)
+		fmt.Println(resp.Node.Value)
 	case "extended":
 		// Extended prints in a rfc2822 style format
-		fmt.Println("Key:", resp.Key)
-		fmt.Println("Modified-Index:", resp.ModifiedIndex)
-		fmt.Println("TTL:", resp.TTL)
+		fmt.Println("Key:", resp.Node.Key)
+		fmt.Println("Modified-Index:", resp.Node.ModifiedIndex)
+		fmt.Println("TTL:", resp.Node.TTL)
 		fmt.Println("")
-		fmt.Println(resp.Value)
+		fmt.Println(resp.Node.Value)
 	case "json":
 		b, err := json.Marshal(resp)
 		if err != nil {
