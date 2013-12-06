@@ -36,11 +36,15 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 	if argsLen < 2 {
 		return nil, errors.New("Key and command to exec required")
 	}
-	key := args[0]
+
+	key := args[argsLen - 1]
+	cmdArgs := args[:argsLen - 1]
 
 	index := 0
 	if c.Int("after-index") != 0 {
 		index = c.Int("after-index") + 1
+		key = args[0]
+		cmdArgs = args[2:]
 	}
 
 	sigch := make(chan os.Signal, 1)
@@ -56,17 +60,10 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 	receiver := make(chan *etcd.Response)
 	client.SetConsistency(etcd.WEAK_CONSISTENCY)
 	go client.Watch(key, uint64(index), false, receiver, stop)
-
-	cmdOffset := 0
-	for i, v := range(args) {
-		if v == "--" {
-			cmdOffset = i + 1
-		}
-	}
-
+	
 	for {
 		resp := <-receiver
-		cmd := exec.Command(args[cmdOffset], args[cmdOffset+1:]...)
+		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 		cmd.Env = environResponse(resp, os.Environ())
 
 		stdout, err := cmd.StdoutPipe()
