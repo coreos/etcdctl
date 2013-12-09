@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/codegangsta/cli"
 	"github.com/coreos/go-etcd/etcd"
@@ -30,8 +31,14 @@ func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 		go dumpCURL(client)
 	}
 
-	// Sync cluster.    
-	if !client.SyncCluster() {
+	// Sync cluster.
+	ok := client.SyncCluster()
+	if c.GlobalBool("debug") {
+		fmt.Fprintf(os.Stderr, "Cluster-Peers: %s\n",
+			strings.Join(client.GetCluster(), " "))
+	}
+
+	if !ok {
 		fmt.Println("cannot sync with the given cluster")
 		os.Exit(FailedToConnectToHost)
 	}
