@@ -17,7 +17,7 @@ type printFunc func(*etcd.Response, string)
 func dumpCURL(client *etcd.Client) {
 	client.OpenCURL()
 	for {
-		fmt.Fprintln(os.Stderr, client.RecvCURL())
+		fmt.Fprintf(os.Stderr, "Curl-Example: %s\n", client.RecvCURL())
 	}
 }
 
