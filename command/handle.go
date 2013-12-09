@@ -39,7 +39,7 @@ func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 	}
 
 	if !ok {
-		fmt.Println("cannot sync with the given cluster")
+		fmt.Println("Cannot sync with the cluster")
 		os.Exit(FailedToConnectToHost)
 	}
 
