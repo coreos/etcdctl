@@ -24,7 +24,7 @@ func dumpCURL(client *etcd.Client) {
 // rawhandle wraps the command function handlers and sets up the
 // environment but performs no output formatting.
 func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
-	peers := c.GlobalString("C")
+	peers := c.GlobalString("peers")
 	client := etcd.NewClient(trimsplit(peers, ","))
 
 	if c.GlobalBool("debug") {
