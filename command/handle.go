@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/codegangsta/cli"
 	"github.com/coreos/go-etcd/etcd"
@@ -16,23 +17,29 @@ type printFunc func(*etcd.Response, string)
 func dumpCURL(client *etcd.Client) {
 	client.OpenCURL()
 	for {
-		fmt.Fprintln(os.Stderr, client.RecvCURL())
+		fmt.Fprintf(os.Stderr, "Curl-Example: %s\n", client.RecvCURL())
 	}
 }
 
 // rawhandle wraps the command function handlers and sets up the
 // environment but performs no output formatting.
 func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
-	peers := c.GlobalString("C")
+	peers := c.GlobalString("peers")
 	client := etcd.NewClient(trimsplit(peers, ","))
 
 	if c.GlobalBool("debug") {
 		go dumpCURL(client)
 	}
 
-	// Sync cluster.    
-	if !client.SyncCluster() {
-		fmt.Println("cannot sync with the given cluster")
+	// Sync cluster.
+	ok := client.SyncCluster()
+	if c.GlobalBool("debug") {
+		fmt.Fprintf(os.Stderr, "Cluster-Peers: %s\n",
+			strings.Join(client.GetCluster(), " "))
+	}
+
+	if !ok {
+		fmt.Println("Cannot sync with the cluster")
 		os.Exit(FailedToConnectToHost)
 	}
 
