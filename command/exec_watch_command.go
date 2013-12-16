@@ -29,8 +29,6 @@ func NewExecWatchCommand() cli.Command {
 
 // execWatchCommandFunc executes the "exec-watch" command.
 func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
-	recursive := c.Bool("recursive")
-
 	_ = io.Copy
 	_ = exec.Command
 	args := c.Args()
@@ -46,6 +44,12 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 	index := 0
 	if c.Int("after-index") != 0 {
 		index = c.Int("after-index") + 1
+		key = args[0]
+		cmdArgs = args[2:]
+	}
+
+	recursive := c.Bool("recursive")
+	if recursive != false {
 		key = args[0]
 		cmdArgs = args[2:]
 	}
