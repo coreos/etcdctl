@@ -118,6 +118,16 @@ $ etcdctl ls /adir
 /adir/key2
 ```
 
+Add `-recursive` to recursively list subdirectories encountered. 
+
+```
+$ etcdctl ls -recursive
+/akey
+/adir
+/adir/key1
+/adir/key2
+```
+
 
 ### Deleting a key
 
