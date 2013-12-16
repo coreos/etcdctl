@@ -124,7 +124,7 @@ $ etcdctl delete /foo/bar
 Recursively delete a key and all child keys:
 
 ```
-$ etcdctl delete /path/to/dir --consistent
+$ etcdctl delete /path/to/dir --recursive
 ```
 
 
