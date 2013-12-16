@@ -185,6 +185,19 @@ ETCD_MODIFIED_INDEX=2000
 ETCD_KEY=/foo/bar
 ```
 
+Continuously and recursively watch a key and exec a program:
+```
+$ etcdctl exec-watch /foo -- sh -c "env | grep ETCD"
+ETCD_WATCH_ACTION=set
+ETCD_VALUE=My configuration stuff
+ETCD_MODIFIED_INDEX=1999
+ETCD_KEY=/foo/bar
+ETCD_WATCH_ACTION=set
+ETCD_VALUE=My new configuration stuff
+ETCD_MODIFIED_INDEX=2000
+ETCD_KEY=/foo/barbar
+```
+
 ## Return Codes
 
 The following exit codes can be returned from etcdctl:
