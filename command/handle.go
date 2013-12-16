@@ -85,6 +85,9 @@ func printKey(resp *etcd.Response, format string) {
 		fmt.Println("Key:", resp.Node.Key)
 		fmt.Println("Modified-Index:", resp.Node.ModifiedIndex)
 		fmt.Println("TTL:", resp.Node.TTL)
+		fmt.Println("Etcd-Index:", resp.EtcdIndex)
+		fmt.Println("Raft-Index:", resp.RaftIndex)
+		fmt.Println("Raft-Term:", resp.RaftTerm)
 		fmt.Println("")
 		fmt.Println(resp.Node.Value)
 	case "json":
