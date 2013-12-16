@@ -57,8 +57,14 @@ Goodbye world
 Create a new key `/foo/bar`, only if the key did not previously exist:
 
 ```
-$ etcdctl create /foo/new_bar "Hello world"
+$ etcdctl mk /foo/new_bar "Hello world"
 Hello world
+```
+
+Create a new dir `/fooDir`, only if the key did not previously exist:
+
+```
+$ etcdctl mkdir /fooDir
 ```
 
 Update an existing key `/foo/bar`, only if the key already existed:
