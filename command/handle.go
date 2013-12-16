@@ -72,7 +72,7 @@ func handleKey(c *cli.Context, fn handlerFunc) {
 func printKey(resp *etcd.Response, format string) {
 	// printKey is only for keys, error on directories
 	if resp.Node.Dir == true {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("%s: Is a directory", resp.Node.Key))
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Cannot print key [%s: Is a directory]", resp.Node.Key))
 		os.Exit(1)
 	}
 
