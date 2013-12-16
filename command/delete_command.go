@@ -11,9 +11,10 @@ import (
 func NewDeleteCommand() cli.Command {
 	return cli.Command{
 		Name:  "delete",
-		Usage: "remove a key",
+		Usage: "delete a key",
 		Flags: []cli.Flag{
-			cli.BoolFlag{"recursive", "deletes the key and all child keys"},
+			cli.BoolFlag{"dir", "deletes the key if it is an empty directory or a key-value pair"},
+			cli.BoolFlag{"recursive", "deletes the key and all child keys(if it is a directory)"},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, deleteCommandFunc)
@@ -28,5 +29,11 @@ func deleteCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, err
 	}
 	key := c.Args()[0]
 	recursive := c.Bool("recursive")
-	return client.Delete(key, recursive)
+	dir := c.Bool("dir")
+
+	if recursive || !dir {
+		return client.Delete(key, recursive)
+	}
+
+	return client.DeleteDir(key)
 }

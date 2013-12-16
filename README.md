@@ -121,6 +121,12 @@ Delete a key:
 $ etcdctl delete /foo/bar
 ```
 
+Delete an empty directory or a key-value pair
+
+```
+$ etcdctl delete /path/to/dir --dir
+```
+
 Recursively delete a key and all child keys:
 
 ```
