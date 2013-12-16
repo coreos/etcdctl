@@ -20,7 +20,8 @@ func main() {
 	app.Commands = []cli.Command{
 		command.NewCreateCommand(),
 		command.NewCreateDirCommand(),
-		command.NewDeleteCommand(),
+		command.NewRemoveCommand(),
+		command.NewRemoveDirCommand(),
 		command.NewGetCommand(),
 		command.NewLsCommand(),
 		command.NewSetCommand(),
