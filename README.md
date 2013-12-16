@@ -118,19 +118,25 @@ $ etcdctl ls /adir
 Delete a key:
 
 ```
-$ etcdctl delete /foo/bar
+$ etcdctl rm /foo/bar
 ```
 
 Delete an empty directory or a key-value pair
 
 ```
-$ etcdctl delete /path/to/dir --dir
+$ etcdctl rmdir /path/to/dir 
+```
+
+or
+
+```
+$ etcdctl rm /path/to/dir --dir
 ```
 
 Recursively delete a key and all child keys:
 
 ```
-$ etcdctl delete /path/to/dir --recursive
+$ etcdctl rm /path/to/dir --recursive
 ```
 
 
