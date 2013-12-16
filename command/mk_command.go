@@ -7,22 +7,22 @@ import (
 	"github.com/coreos/go-etcd/etcd"
 )
 
-// NewCreateCommand returns the CLI command for "create".
-func NewCreateCommand() cli.Command {
+// NewMakeCommand returns the CLI command for "mk".
+func NewMakeCommand() cli.Command {
 	return cli.Command{
-		Name:  "create",
-		Usage: "create a new key with a given value",
+		Name:  "mk",
+		Usage: "make a new key with a given value",
 		Flags: []cli.Flag{
 			cli.IntFlag{"ttl", 0, "key time-to-live"},
 		},
 		Action: func(c *cli.Context) {
-			handleKey(c, createCommandFunc)
+			handleKey(c, makeCommandFunc)
 		},
 	}
 }
 
-// createCommandFunc executes the "create" command.
-func createCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
+// makeCommandFunc executes the "make" command.
+func makeCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
 	if len(c.Args()) == 0 {
 		return nil, errors.New("Key required")
 	} else if len(c.Args()) == 1 {

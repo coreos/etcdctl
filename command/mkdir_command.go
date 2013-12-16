@@ -7,22 +7,22 @@ import (
 	"github.com/coreos/go-etcd/etcd"
 )
 
-// NewCreateDirCommand returns the CLI command for "createDir".
-func NewCreateDirCommand() cli.Command {
+// NewMakeDirCommand returns the CLI command for "mkdir".
+func NewMakeDirCommand() cli.Command {
 	return cli.Command{
-		Name:  "createDir",
-		Usage: "create a new directory",
+		Name:  "mkdir",
+		Usage: "make a new directory",
 		Flags: []cli.Flag{
 			cli.IntFlag{"ttl", 0, "key time-to-live"},
 		},
 		Action: func(c *cli.Context) {
-			handleKey(c, createDirCommandFunc)
+			handleKey(c, makeDirCommandFunc)
 		},
 	}
 }
 
-// createDirCommandFunc executes the "createDir" command.
-func createDirCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
+// makeDirCommandFunc executes the "mkdir" command.
+func makeDirCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
 	if len(c.Args()) == 0 {
 		return nil, errors.New("Key required")
 	}
