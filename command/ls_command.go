@@ -11,6 +11,9 @@ func NewLsCommand() cli.Command {
 	return cli.Command{
 		Name:  "ls",
 		Usage: "retrieve a directory",
+		Flags: []cli.Flag{
+			cli.BoolFlag{"recursive", "returns all values for key and child keys"},
+		},
 		Action: func(c *cli.Context) {
 			handleLs(c, lsCommandFunc)
 		},
@@ -25,12 +28,11 @@ func handleLs(c *cli.Context, fn handlerFunc) {
 // printLs writes a response out in a manner similar to the `ls` command in unix.
 // Non-empty directories list their contents and files list their name.
 func printLs(resp *etcd.Response, format string) {
-	if resp.Node.Dir == false {
+	if !resp.Node.Dir {
 		fmt.Println(resp.Node.Key)
 	}
-
-	for _, n := range(resp.Node.Nodes) {
-		fmt.Println(n.Key)
+	for _, node := range resp.Node.Nodes {
+		rPrint(&node)
 	}
 }
 
@@ -40,7 +42,16 @@ func lsCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) 
 	if len(c.Args()) != 0 {
 		key = c.Args()[0]
 	}
+	recursive := c.Bool("recursive")
 
 	// Retrieve the value from the server.
-	return client.Get(key, false, false)
+	return client.Get(key, false, recursive)
+}
+
+// rPrint recursively prints out the nodes in the node structure.
+func rPrint(n *etcd.Node) {
+	fmt.Println(n.Key)
+	for _, node := range n.Nodes {
+		rPrint(&node)
+	}
 }
