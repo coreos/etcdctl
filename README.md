@@ -104,6 +104,19 @@ $ etcdctl get /path/to/mydir --recursive
 ...
 ```
 
+Get the value of a key with additional metadata in a parseable format:
+
+```
+$ etcdctl -o extended get /foo/bar
+Key: /foo/bar
+Modified-Index: 72
+TTL: 0
+Etcd-Index: 72
+Raft-Index: 5611
+Raft-Term: 1
+
+Hello World
+```
 
 ### Listing a directory
 
