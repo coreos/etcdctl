@@ -10,7 +10,7 @@ import (
 // NewUpdateDirCommand returns the CLI command for "updateDir".
 func NewUpdateDirCommand() cli.Command {
 	return cli.Command{
-		Name:  "updateDir",
+		Name:  "updatedir",
 		Usage: "update an existing directory",
 		Flags: []cli.Flag{
 			cli.IntFlag{"ttl", 0, "key time-to-live"},

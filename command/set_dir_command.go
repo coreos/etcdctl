@@ -10,7 +10,7 @@ import (
 // NewSetDirCommand returns the CLI command for "setDir".
 func NewSetDirCommand() cli.Command {
 	return cli.Command{
-		Name:  "setDir",
+		Name:  "setdir",
 		Usage: "create a new or existing directory",
 		Flags: []cli.Flag{
 			cli.IntFlag{"ttl", 0, "key time-to-live"},
