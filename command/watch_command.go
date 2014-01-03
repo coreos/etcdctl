@@ -47,16 +47,25 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 
 		go func() {
 			<-sigch
-			stop <- true
 			os.Exit(0)
 		}()
 
 		receiver := make(chan *etcd.Response)
-		go client.Watch(key, uint64(index), recursive, receiver, stop)
+		errCh := make(chan error, 1)
+
+		go func() {
+			_, err := client.Watch(key, uint64(index), recursive, receiver, stop)
+			errCh <- err
+		}()
 
 		for {
-			resp := <-receiver
-			printKey(resp, c.GlobalString("output"))
+			select {
+			case resp := <-receiver:
+				printKey(resp, c.GlobalString("output"))
+			case err := <-errCh:
+				fmt.Println("Error:", err)
+				os.Exit(-1)
+			}
 		}
 
 	} else {
