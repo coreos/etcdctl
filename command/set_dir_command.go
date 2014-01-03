@@ -13,7 +13,7 @@ func NewSetDirCommand() cli.Command {
 		Name:  "setdir",
 		Usage: "create a new or existing directory",
 		Flags: []cli.Flag{
-			cli.IntFlag{"ttl", 0, "key time-to-live"},
+			cli.IntFlag{"ttl", 0, "key time-to-live", false},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, setDirCommandFunc)
