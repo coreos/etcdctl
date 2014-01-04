@@ -83,7 +83,13 @@ func printKey(resp *etcd.Response, format string) {
 	case "extended":
 		// Extended prints in a rfc2822 style format
 		fmt.Println("Key:", resp.Node.Key)
+		fmt.Println("Created-Index:", resp.Node.CreatedIndex)
 		fmt.Println("Modified-Index:", resp.Node.ModifiedIndex)
+
+		if resp.PrevNode != nil {
+			fmt.Println("PrevNode.Value:", resp.PrevNode.Value)
+		}
+
 		fmt.Println("TTL:", resp.Node.TTL)
 		fmt.Println("Etcd-Index:", resp.EtcdIndex)
 		fmt.Println("Raft-Index:", resp.RaftIndex)
