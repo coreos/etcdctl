@@ -18,7 +18,7 @@ func NewExecWatchCommand() cli.Command {
 		Name:  "exec-watch",
 		Usage: "watch a key for changes and exec an executable",
 		Flags: []cli.Flag{
-			cli.IntFlag{"after-index", 0, "watch after the given index", false},
+			cli.IntFlag{"after-index", 0, "watch after the given index"},
 			cli.BoolFlag{"recursive", "watch all values for key and child keys"},
 		},
 		Action: func(c *cli.Context) {

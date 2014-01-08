@@ -32,6 +32,6 @@ for p in $packages; do
 	rsync -a -z -r --exclude '.git/' --exclude '.hg/' src/$p/ $p
 
 	# Make a nice commit about what everything bumped to
-	git add $p
+	git add $p -f
 	git commit -m "bump($p): $HEAD"
 done
