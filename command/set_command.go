@@ -3,19 +3,19 @@ package command
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewSetCommand returns the CLI command for "set".
 func NewSetCommand() cli.Command {
 	return cli.Command{
-		Name:  "set",
-		Usage: "set the value of a key",
+		Name:	"set",
+		Usage:	"set the value of a key",
 		Flags: []cli.Flag{
-			cli.IntFlag{"ttl", 0, "key time-to-live", false},
-			cli.StringFlag{"swap-with-value", "", "previous value", false},
-			cli.IntFlag{"swap-with-index", 0, "previous index", false},
+			cli.IntFlag{"ttl", 0, "key time-to-live"},
+			cli.StringFlag{"swap-with-value", "", "previous value"},
+			cli.IntFlag{"swap-with-index", 0, "previous index"},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, setCommandFunc)

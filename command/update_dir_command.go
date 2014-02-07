@@ -3,17 +3,17 @@ package command
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewUpdateDirCommand returns the CLI command for "updateDir".
 func NewUpdateDirCommand() cli.Command {
 	return cli.Command{
-		Name:  "updatedir",
-		Usage: "update an existing directory",
+		Name:	"updatedir",
+		Usage:	"update an existing directory",
 		Flags: []cli.Flag{
-			cli.IntFlag{"ttl", 0, "key time-to-live", false},
+			cli.IntFlag{"ttl", 0, "key time-to-live"},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, updateDirCommandFunc)

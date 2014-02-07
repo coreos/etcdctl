@@ -3,17 +3,17 @@ package command
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewSetDirCommand returns the CLI command for "setDir".
 func NewSetDirCommand() cli.Command {
 	return cli.Command{
-		Name:  "setdir",
-		Usage: "create a new or existing directory",
+		Name:	"setdir",
+		Usage:	"create a new or existing directory",
 		Flags: []cli.Flag{
-			cli.IntFlag{"ttl", 0, "key time-to-live", false},
+			cli.IntFlag{"ttl", 0, "key time-to-live"},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, setDirCommandFunc)

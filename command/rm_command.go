@@ -3,15 +3,15 @@ package command
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewRemoveCommand returns the CLI command for "rm".
 func NewRemoveCommand() cli.Command {
 	return cli.Command{
-		Name:  "rm",
-		Usage: "remove a key",
+		Name:	"rm",
+		Usage:	"remove a key",
 		Flags: []cli.Flag{
 			cli.BoolFlag{"dir", "removes the key if it is an empty directory or a key-value pair"},
 			cli.BoolFlag{"recursive", "removes the key and all child keys(if it is a directory)"},

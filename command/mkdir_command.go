@@ -3,17 +3,17 @@ package command
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewMakeDirCommand returns the CLI command for "mkdir".
 func NewMakeDirCommand() cli.Command {
 	return cli.Command{
-		Name:  "mkdir",
-		Usage: "make a new directory",
+		Name:	"mkdir",
+		Usage:	"make a new directory",
 		Flags: []cli.Flag{
-			cli.IntFlag{"ttl", 0, "key time-to-live", false},
+			cli.IntFlag{"ttl", 0, "key time-to-live"},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, makeDirCommandFunc)

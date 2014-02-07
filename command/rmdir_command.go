@@ -3,15 +3,15 @@ package command
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewRemoveCommand returns the CLI command for "rmdir".
 func NewRemoveDirCommand() cli.Command {
 	return cli.Command{
-		Name:  "rmdir",
-		Usage: "removes the key if it is an empty directory or a key-value pair",
+		Name:	"rmdir",
+		Usage:	"removes the key if it is an empty directory or a key-value pair",
 		Action: func(c *cli.Context) {
 			handleKey(c, removeDirCommandFunc)
 		},

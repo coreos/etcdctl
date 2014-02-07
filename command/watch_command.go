@@ -6,18 +6,18 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewWatchCommand returns the CLI command for "watch".
 func NewWatchCommand() cli.Command {
 	return cli.Command{
-		Name:  "watch",
-		Usage: "watch a key for changes",
+		Name:	"watch",
+		Usage:	"watch a key for changes",
 		Flags: []cli.Flag{
 			cli.BoolFlag{"forever", "forever watch a key until CTRL+C"},
-			cli.IntFlag{"after-index", 0, "watch after the given index", false},
+			cli.IntFlag{"after-index", 0, "watch after the given index"},
 			cli.BoolFlag{"recursive", "returns all values for key and child keys"},
 		},
 		Action: func(c *cli.Context) {

@@ -1,13 +1,13 @@
 package cli_test
 
 import (
-	"github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
 	"testing"
 )
 
 var boolFlagTests = []struct {
-	name     string
-	expected string
+	name		string
+	expected	string
 }{
 	{"help", "--help\t"},
 	{"h", "-h\t"},
@@ -26,8 +26,8 @@ func TestBoolFlagHelpOutput(t *testing.T) {
 }
 
 var stringFlagTests = []struct {
-	name     string
-	expected string
+	name		string
+	expected	string
 }{
 	{"help", "--help ''\t"},
 	{"h", "-h ''\t"},
@@ -46,8 +46,8 @@ func TestStringFlagHelpOutput(t *testing.T) {
 }
 
 var intFlagTests = []struct {
-	name     string
-	expected string
+	name		string
+	expected	string
 }{
 	{"help", "--help '0'\t"},
 	{"h", "-h '0'\t"},
@@ -66,8 +66,8 @@ func TestIntFlagHelpOutput(t *testing.T) {
 }
 
 var float64FlagTests = []struct {
-	name     string
-	expected string
+	name		string
+	expected	string
 }{
 	{"help", "--help '0'\t"},
 	{"h", "-h '0'\t"},
@@ -134,33 +134,3 @@ func TestParseMultiBool(t *testing.T) {
 	}
 	a.Run([]string{"run", "--serve"})
 }
-
-func TestStringFlagWithoutDefaultValue(t *testing.T) {
-	flag := cli.StringFlag{Name: "help", Usage: "Show help", OmitDefaultValue: true}
-	output := flag.String()
-
-	if output != "--help \tShow help" {
-		t.Errorf("string without default value should omit default value")
-	}
-}
-
-func TestIntFlagWithoutDefaultValue(t *testing.T) {
-	flag := cli.IntFlag{Name: "help", Usage: "Prints number of help topics", OmitDefaultValue: true}
-	output := flag.String()
-	expected:= "--help \tPrints number of help topics"
-
-	if output != expected {
-		t.Errorf("expected '%s' to equal '%s", output, expected)
-	}
-}
-
-func TestFloatFlagWithoutDefaultValue(t *testing.T) {
-	flag := cli.Float64Flag{Name: "help", Usage: "Prints floating help topics", OmitDefaultValue: true}
-	output := flag.String()
-	expected:= "--help \tPrints floating help topics"
-
-	if output != expected {
-		t.Errorf("expected '%s' to equal '%s", output, expected)
-	}
-}
-

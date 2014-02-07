@@ -3,14 +3,14 @@ package command
 import (
 	"fmt"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 func NewLsCommand() cli.Command {
 	return cli.Command{
-		Name:  "ls",
-		Usage: "retrieve a directory",
+		Name:	"ls",
+		Usage:	"retrieve a directory",
 		Flags: []cli.Flag{
 			cli.BoolFlag{"recursive", "returns all values for key and child keys"},
 		},

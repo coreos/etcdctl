@@ -21,7 +21,6 @@ _testmain.go
 
 *.exe
 
-src/
-pkg/
-/etcdctl
-release_version.go
+/src
+/pkg
+/bin
