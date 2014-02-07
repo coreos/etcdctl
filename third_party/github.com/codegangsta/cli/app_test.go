@@ -2,7 +2,7 @@ package cli_test
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
 	"os"
 	"testing"
 )
@@ -40,8 +40,8 @@ func TestApp_Run(t *testing.T) {
 }
 
 var commandAppTests = []struct {
-	name     string
-	expected bool
+	name		string
+	expected	bool
 }{
 	{"foobar", true},
 	{"batbaz", true},
@@ -70,7 +70,7 @@ func TestApp_CommandWithArgBeforeFlags(t *testing.T) {
 
 	app := cli.NewApp()
 	command := cli.Command{
-		Name: "cmd",
+		Name:	"cmd",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "option", Value: "", Usage: "some option"},
 		},
@@ -109,7 +109,7 @@ func TestApp_ParseSliceFlags(t *testing.T) {
 
 	app := cli.NewApp()
 	command := cli.Command{
-		Name: "cmd",
+		Name:	"cmd",
 		Flags: []cli.Flag{
 			cli.IntSliceFlag{Name: "p", Value: &cli.IntSlice{}, Usage: "set one or more ip addr"},
 			cli.StringSliceFlag{Name: "ip", Value: &cli.StringSlice{}, Usage: "set one or more ports to open"},
@@ -157,5 +157,90 @@ func TestApp_ParseSliceFlags(t *testing.T) {
 
 	if !StrsEquals(parsedStringSlice, expectedStringSlice) {
 		t.Errorf("%s does not match %s", parsedStringSlice, expectedStringSlice)
+	}
+}
+
+func TestApp_BeforeFunc(t *testing.T) {
+	beforeRun, subcommandRun := false, false
+	beforeError := fmt.Errorf("fail")
+	var err error
+
+	app := cli.NewApp()
+
+	app.Before = func(c *cli.Context) error {
+		beforeRun = true
+		s := c.String("opt")
+		if s == "fail" {
+			return beforeError
+		}
+
+		return nil
+	}
+
+	app.Commands = []cli.Command{
+		cli.Command{
+			Name:	"sub",
+			Action: func(c *cli.Context) {
+				subcommandRun = true
+			},
+		},
+	}
+
+	app.Flags = []cli.Flag{
+		cli.StringFlag{Name: "opt"},
+	}
+
+	// run with the Before() func succeeding
+	err = app.Run([]string{"command", "--opt", "succeed", "sub"})
+
+	if err != nil {
+		t.Fatalf("Run error: %s", err)
+	}
+
+	if beforeRun == false {
+		t.Errorf("Before() not executed when expected")
+	}
+
+	if subcommandRun == false {
+		t.Errorf("Subcommand not executed when expected")
+	}
+
+	// reset
+	beforeRun, subcommandRun = false, false
+
+	// run with the Before() func failing
+	err = app.Run([]string{"command", "--opt", "fail", "sub"})
+
+	// should be the same error produced by the Before func
+	if err != beforeError {
+		t.Errorf("Run error expected, but not received")
+	}
+
+	if beforeRun == false {
+		t.Errorf("Before() not executed when expected")
+	}
+
+	if subcommandRun == true {
+		t.Errorf("Subcommand executed when NOT expected")
+	}
+
+}
+
+func TestAppHelpPrinter(t *testing.T) {
+	oldPrinter := cli.HelpPrinter
+	defer func() {
+		cli.HelpPrinter = oldPrinter
+	}()
+
+	var wasCalled = false
+	cli.HelpPrinter = func(template string, data interface{}) {
+		wasCalled = true
+	}
+
+	app := cli.NewApp()
+	app.Run([]string{"-h"})
+
+	if wasCalled == false {
+		t.Errorf("Help printer expected to be called, but was not")
 	}
 }

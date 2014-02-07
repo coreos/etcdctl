@@ -146,7 +146,8 @@ func (c *Client) sendRequest(method string, relativePath string,
 
 		// network error, change a machine!
 		if resp, err = c.httpClient.Do(req); err != nil {
-			c.switchLeader(trial % len(c.cluster.Machines))
+			logger.Debug("network error: ", err.Error())
+			c.cluster.switchLeader(trial % len(c.cluster.Machines))
 			time.Sleep(time.Millisecond * 200)
 			continue
 		}
@@ -195,7 +196,7 @@ func (c *Client) handleResp(resp *http.Response) (bool, []byte) {
 		if err != nil {
 			logger.Warning(err)
 		} else {
-			c.updateLeader(u)
+			c.cluster.updateLeaderFromURL(u)
 		}
 
 		return false, nil

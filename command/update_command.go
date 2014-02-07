@@ -3,17 +3,17 @@ package command
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewUpdateCommand returns the CLI command for "update".
 func NewUpdateCommand() cli.Command {
 	return cli.Command{
-		Name:  "update",
-		Usage: "update an existing key with a given value",
+		Name:	"update",
+		Usage:	"update an existing key with a given value",
 		Flags: []cli.Flag{
-			cli.IntFlag{"ttl", 0, "key time-to-live", false},
+			cli.IntFlag{"ttl", 0, "key time-to-live"},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, updateCommandFunc)

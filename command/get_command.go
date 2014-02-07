@@ -3,15 +3,15 @@ package command
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
+	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
 // NewGetCommand returns the CLI command for "get".
 func NewGetCommand() cli.Command {
 	return cli.Command{
-		Name:  "get",
-		Usage: "retrieve the value of a key",
+		Name:	"get",
+		Usage:	"retrieve the value of a key",
 		Flags: []cli.Flag{
 			cli.BoolFlag{"sort", "returns result in sorted order"},
 			cli.BoolFlag{"consistent", "send request to the leader, thereby guranteeing that any earlier writes will be seen by the read"},
