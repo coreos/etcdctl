@@ -15,6 +15,8 @@ func NewRemoveCommand() cli.Command {
 		Flags: []cli.Flag{
 			cli.BoolFlag{"dir", "removes the key if it is an empty directory or a key-value pair"},
 			cli.BoolFlag{"recursive", "removes the key and all child keys(if it is a directory)"},
+			cli.StringFlag{"with-value", "", "previous value"},
+			cli.IntFlag{"with-index", 0, "previous index"},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, removeCommandFunc)
@@ -30,6 +32,15 @@ func removeCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, err
 	key := c.Args()[0]
 	recursive := c.Bool("recursive")
 	dir := c.Bool("dir")
+
+	// TODO: distinguish with flag is not set and empty flag
+	// the cli pkg need to provide this feature
+	prevValue := c.String("with-value")
+	prevIndex := uint64(c.Int("with-index"))
+
+	if prevValue != "" || prevIndex != 0 {
+		return client.CompareAndDelete(key, prevValue, prevIndex)
+	}
 
 	if recursive || !dir {
 		return client.Delete(key, recursive)

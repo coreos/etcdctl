@@ -161,6 +161,17 @@ Recursively delete a key and all child keys:
 $ etcdctl rm /path/to/dir --recursive
 ```
 
+Conditionally delete `/foo/bar` if the previous value was "Hello world":
+
+```
+$ etcdctl rm /foo/bar --with-value "Hello world"
+```
+
+Conditionally delete `/foo/bar` if the previous etcd index was 12:
+
+```
+$ etcdctl rm /foo/bar --with-index 12
+```
 
 ### Watching for changes
 
