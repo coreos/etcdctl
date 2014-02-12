@@ -97,13 +97,6 @@ $ etcdctl get /foo/bar --consistent
 Hello world
 ```
 
-Get the value of a key and all child keys.
-
-```
-$ etcdctl get /path/to/mydir --recursive
-...
-```
-
 Get the value of a key with additional metadata in a parseable format:
 
 ```
@@ -131,10 +124,10 @@ $ etcdctl ls /adir
 /adir/key2
 ```
 
-Add `-recursive` to recursively list subdirectories encountered. 
+Add `-recursive` to recursively list subdirectories encountered.
 
 ```
-$ etcdctl ls -recursive
+$ etcdctl ls --recursive
 /akey
 /adir
 /adir/key1
