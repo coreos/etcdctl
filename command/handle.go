@@ -58,9 +58,15 @@ func handlePrint(c *cli.Context, fn handlerFunc, pFn printFunc) {
 		os.Exit(ErrorFromEtcd)
 	}
 
-	if resp != nil {
+	if resp != nil && pFn != nil {
 		pFn(resp, c.GlobalString("output"))
 	}
+}
+
+// handleDir handles a request that wants to do operations on a single dir.
+// Dir cannot be printed out, so we set NIL print function here.
+func handleDir(c *cli.Context, fn handlerFunc) {
+	handlePrint(c, fn, nil)
 }
 
 // handleKey handles a request that wants to do operations on a single key.
