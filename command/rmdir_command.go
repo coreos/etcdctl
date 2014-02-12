@@ -13,7 +13,7 @@ func NewRemoveDirCommand() cli.Command {
 		Name:	"rmdir",
 		Usage:	"removes the key if it is an empty directory or a key-value pair",
 		Action: func(c *cli.Context) {
-			handleKey(c, removeDirCommandFunc)
+			handleDir(c, removeDirCommandFunc)
 		},
 	}
 }
