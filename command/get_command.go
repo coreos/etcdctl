@@ -1,6 +1,8 @@
 package command
 
 import (
+	"os"
+	"fmt"
 	"errors"
 
 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
@@ -17,9 +19,24 @@ func NewGetCommand() cli.Command {
 			cli.BoolFlag{"consistent", "send request to the leader, thereby guranteeing that any earlier writes will be seen by the read"},
 		},
 		Action: func(c *cli.Context) {
-			handleKey(c, getCommandFunc)
+			handleGet(c, getCommandFunc)
 		},
 	}
+}
+
+// handleGet handles a request that intends to do get-like operations.
+func handleGet(c *cli.Context, fn handlerFunc) {
+	handlePrint(c, fn, printGet)
+}
+
+// printGet writes error message when getting the value of a directory.
+func printGet(resp *etcd.Response, format string) {
+	if resp.Node.Dir {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Cannot get the value [%s: Is a directory]\nPlease use ls to list a directory", resp.Node.Key))
+		os.Exit(1)
+	}
+
+	printKey(resp, format)
 }
 
 // getCommandFunc executes the "get" command.
