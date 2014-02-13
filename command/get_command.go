@@ -32,7 +32,7 @@ func handleGet(c *cli.Context, fn handlerFunc) {
 // printGet writes error message when getting the value of a directory.
 func printGet(resp *etcd.Response, format string) {
 	if resp.Node.Dir {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Cannot get the value [%s: Is a directory]\nPlease use ls to list a directory", resp.Node.Key))
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("%s: is a directory", resp.Node.Key))
 		os.Exit(1)
 	}
 
