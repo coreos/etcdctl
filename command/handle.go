@@ -3,6 +3,7 @@ package command
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 
@@ -21,26 +22,55 @@ func dumpCURL(client *etcd.Client) {
 	}
 }
 
+// createHttpPath attaches http scheme to the given address if needed
+func createHttpPath(addr string) (string, error) {
+	u, err := url.Parse(addr)
+	if err != nil {
+		return "", err
+	}
+
+	if u.Scheme == "" {
+		u.Scheme = "http"
+	}
+	return u.String(), nil
+}
+
 // rawhandle wraps the command function handlers and sets up the
 // environment but performs no output formatting.
 func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
-	peers := c.GlobalString("peers")
-	client := etcd.NewClient(trimsplit(peers, ","))
+	sync := !c.GlobalBool("no-sync")
+
+	peers := trimsplit(c.GlobalString("peers"), ",")
+	// If no sync, create http path for each peer address
+	if !sync {
+		revisedPeers := make([]string, 0)
+		for _, peer := range peers {
+			if revisedPeer, err := createHttpPath(peer); err != nil {
+				fmt.Fprintf(os.Stderr, "Unsupported url %v: %v\n", peer, err)
+			} else {
+				revisedPeers = append(revisedPeers, revisedPeer)
+			}
+		}
+		peers = revisedPeers
+	}
+
+	client := etcd.NewClient(peers)
 
 	if c.GlobalBool("debug") {
 		go dumpCURL(client)
 	}
 
 	// Sync cluster.
-	ok := client.SyncCluster()
+	if sync {
+		if ok := client.SyncCluster(); !ok {
+			fmt.Println("Cannot sync with the cluster using peers", peers)
+			os.Exit(FailedToConnectToHost)
+		}
+	}
+
 	if c.GlobalBool("debug") {
 		fmt.Fprintf(os.Stderr, "Cluster-Peers: %s\n",
 			strings.Join(client.GetCluster(), " "))
-	}
-
-	if !ok {
-		fmt.Println("Cannot sync with the cluster")
-		os.Exit(FailedToConnectToHost)
 	}
 
 	// Execute handler function.

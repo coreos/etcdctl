@@ -14,6 +14,7 @@ func main() {
 	app.Usage = "A simple command line client for etcd."
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{"debug", "output cURL commands which can be used to reproduce the request"},
+		cli.BoolFlag{"no-sync", "don't synchronize cluster information before sending request"},
 		cli.StringFlag{"output, o", "simple", "output response in the given format (`simple` or `json`)"},
 		cli.StringFlag{"peers, C", "127.0.0.1:4001", "a comma seperated list of machine addresses in the cluster"},
 	}
