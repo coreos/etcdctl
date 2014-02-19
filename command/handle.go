@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
+	"net/url"
 
 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
 	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
@@ -21,26 +21,30 @@ func dumpCURL(client *etcd.Client) {
 	}
 }
 
+// createHttpPath creates http path from machine address
+func createHttpPath(server string) string {
+	u, err := url.Parse(server)
+	if err != nil {
+		return ""
+	}
+
+	if u.Scheme == "" {
+		u.Scheme = "http"
+	}
+	return u.String()
+}
+
 // rawhandle wraps the command function handlers and sets up the
 // environment but performs no output formatting.
 func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
-	peers := c.GlobalString("peers")
-	client := etcd.NewClient(trimsplit(peers, ","))
+	peers := trimsplit(c.GlobalString("peers"), ",")
+	for i, peer := range peers {
+		peers[i] = createHttpPath(peer)
+	}
+	client := etcd.NewClient(peers)
 
 	if c.GlobalBool("debug") {
 		go dumpCURL(client)
-	}
-
-	// Sync cluster.
-	ok := client.SyncCluster()
-	if c.GlobalBool("debug") {
-		fmt.Fprintf(os.Stderr, "Cluster-Peers: %s\n",
-			strings.Join(client.GetCluster(), " "))
-	}
-
-	if !ok {
-		fmt.Println("Cannot sync with the cluster")
-		os.Exit(FailedToConnectToHost)
 	}
 
 	// Execute handler function.
