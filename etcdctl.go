@@ -16,7 +16,7 @@ func main() {
 		cli.BoolFlag{"debug", "output cURL commands which can be used to reproduce the request"},
 		cli.BoolFlag{"no-sync", "don't synchronize cluster information before sending request"},
 		cli.StringFlag{"output, o", "simple", "output response in the given format (`simple` or `json`)"},
-		cli.StringFlag{"peers, C", "127.0.0.1:4001", "a comma seperated list of machine addresses in the cluster"},
+		cli.StringSliceFlag{"peers, C", &cli.StringSlice{"127.0.0.1:4001"}, "a comma-delimited list of machine addresses in the cluster"},
 	}
 	app.Commands = []cli.Command{
 		command.NewMakeCommand(),
