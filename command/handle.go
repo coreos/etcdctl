@@ -40,7 +40,7 @@ func createHttpPath(addr string) (string, error) {
 func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 	sync := !c.GlobalBool("no-sync")
 
-	peers := trimsplit(c.GlobalString("peers"), ",")
+	peers := c.GlobalStringSlice("peers")
 	// If no sync, create http path for each peer address
 	if !sync {
 		revisedPeers := make([]string, 0)
