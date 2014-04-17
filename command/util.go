@@ -2,9 +2,13 @@ package command
 
 import (
 	"errors"
+	"io"
 	"io/ioutil"
-	"os"
 	"strings"
+)
+
+var (
+	ErrNoAvailSrc = errors.New("no available argument and stdin")
 )
 
 // trimsplit slices s into all substrings separated by sep and returns a
@@ -19,13 +23,13 @@ func trimsplit(s, sep string) []string {
 	return trimmed
 }
 
-func argOrStdin(args []string, i int) (string, error) {
+func argOrStdin(args []string, stdin io.Reader, i int) (string, error) {
 	if i < len(args) {
 		return args[i], nil
 	}
-	bytes, err := ioutil.ReadAll(os.Stdin)
-	if err != nil {
-		return "", errors.New("no available argument and stdin")
+	bytes, err := ioutil.ReadAll(stdin)
+	if string(bytes) == "" || err != nil {
+		return "", ErrNoAvailSrc
 	}
 	return string(bytes), nil
 }

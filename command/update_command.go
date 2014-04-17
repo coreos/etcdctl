@@ -2,6 +2,7 @@ package command
 
 import (
 	"errors"
+	"os"
 
 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
 	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
@@ -27,7 +28,7 @@ func updateCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, err
 		return nil, errors.New("Key required")
 	}
 	key := c.Args()[0]
-	value, err := argOrStdin(c.Args(), 1)
+	value, err := argOrStdin(c.Args(), os.Stdin, 1)
 	if err != nil {
 		return nil, errors.New("Value required")
 	}
