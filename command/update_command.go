@@ -2,6 +2,7 @@ package command
 
 import (
 	"errors"
+	"os"
 
 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
 	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
@@ -25,11 +26,13 @@ func NewUpdateCommand() cli.Command {
 func updateCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
 	if len(c.Args()) == 0 {
 		return nil, errors.New("Key required")
-	} else if len(c.Args()) == 1 {
-		return nil, errors.New("Value required")
 	}
 	key := c.Args()[0]
-	value := c.Args()[1]
+	value, err := argOrStdin(c.Args(), os.Stdin, 1)
+	if err != nil {
+		return nil, errors.New("Value required")
+	}
+
 	ttl := c.Int("ttl")
 
 	return client.Update(key, value, uint64(ttl))
