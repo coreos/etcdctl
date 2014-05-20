@@ -108,6 +108,10 @@ func handleKey(c *cli.Context, fn handlerFunc) {
 	handlePrint(c, fn, printKey)
 }
 
+func handleAll(c *cli.Context, fn handlerFunc) {
+	handlePrint(c, fn, printAll)
+}
+
 // printKey writes the etcd response to STDOUT in the given format.
 func printKey(resp *etcd.Response, format string) {
 	// printKey is only for keys, error on directories
@@ -115,7 +119,19 @@ func printKey(resp *etcd.Response, format string) {
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("Cannot print key [%s: Is a directory]", resp.Node.Key))
 		os.Exit(1)
 	}
+	printKeyOnly(resp, format)
+}
 
+// printAll prints the etcd response in the given format in its best efforts.
+func printAll(resp *etcd.Response, format string) {
+	if resp.Node.Dir == true {
+		return
+	}
+	printKeyOnly(resp, format)
+}
+
+// printKeyOnly only supports to print key correctly.
+func printKeyOnly(resp *etcd.Response, format string) {
 	// Format the result.
 	switch format {
 	case "simple":

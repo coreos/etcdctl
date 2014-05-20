@@ -61,7 +61,7 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 		for {
 			select {
 			case resp := <-receiver:
-				printKey(resp, c.GlobalString("output"))
+				printAll(resp, c.GlobalString("output"))
 			case err := <-errCh:
 				fmt.Println("Error:", err)
 				os.Exit(-1)
@@ -81,7 +81,7 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 		if err != nil {
 			return nil, err
 		}
-		printKey(resp, c.GlobalString("output"))
+		printAll(resp, c.GlobalString("output"))
 	}
 
 	return nil, nil

@@ -19,7 +19,7 @@ func NewRemoveCommand() cli.Command {
 			cli.IntFlag{"with-index", 0, "previous index"},
 		},
 		Action: func(c *cli.Context) {
-			handleKey(c, removeCommandFunc)
+			handleAll(c, removeCommandFunc)
 		},
 	}
 }
