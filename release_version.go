@@ -1,3 +1,3 @@
 package main
 
-const releaseVersion = "0.4.0"
+const releaseVersion = "0.4.0+git"
