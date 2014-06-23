@@ -7,6 +7,15 @@ import (
 	"strings"
 )
 
+// This flag enables bash-completion for all commands and subcommands
+var BashCompletionFlag = BoolFlag{"generate-bash-completion", ""}
+
+// This flag prints the version for the application
+var VersionFlag = BoolFlag{"version, v", "print the version"}
+
+// This flag prints the help for all commands and subcommands
+var HelpFlag = BoolFlag{"help, h", "show help"}
+
 // Flag is a common interface related to parsing flags in cli.
 // For more advanced flag parsing techniques, it is recomended that
 // this interface be implemented.
@@ -34,6 +43,33 @@ func eachName(longName string, fn func(string)) {
 	}
 }
 
+// Generic is a generic parseable type identified by a specific flag
+type Generic interface {
+	Set(value string) error
+	String() string
+}
+
+// GenericFlag is the flag type for types implementing Generic
+type GenericFlag struct {
+	Name  string
+	Value Generic
+	Usage string
+}
+
+func (f GenericFlag) String() string {
+	return fmt.Sprintf("%s%s %v\t`%v` %s", prefixFor(f.Name), f.Name, f.Value, "-"+f.Name+" option -"+f.Name+" option", f.Usage)
+}
+
+func (f GenericFlag) Apply(set *flag.FlagSet) {
+	eachName(f.Name, func(name string) {
+		set.Var(f.Value, name, f.Usage)
+	})
+}
+
+func (f GenericFlag) getName() string {
+	return f.Name
+}
+
 type StringSlice []string
 
 func (f *StringSlice) Set(value string) error {
@@ -56,7 +92,9 @@ type StringSliceFlag struct {
 }
 
 func (f StringSliceFlag) String() string {
-	return fmt.Sprintf("%s%s %v\t`%v` %s", prefixFor(f.Name), f.Name, f.Value, "-"+f.Name+" option -"+f.Name+" option", f.Usage)
+	firstName := strings.Trim(strings.Split(f.Name, ",")[0], " ")
+	pref := prefixFor(firstName)
+	return fmt.Sprintf("%s '%v'\t%v", prefixedNames(f.Name), pref+firstName+" option "+pref+firstName+" option", f.Usage)
 }
 
 func (f StringSliceFlag) Apply(set *flag.FlagSet) {
@@ -131,6 +169,25 @@ func (f BoolFlag) getName() string {
 	return f.Name
 }
 
+type BoolTFlag struct {
+	Name  string
+	Usage string
+}
+
+func (f BoolTFlag) String() string {
+	return fmt.Sprintf("%s\t%v", prefixedNames(f.Name), f.Usage)
+}
+
+func (f BoolTFlag) Apply(set *flag.FlagSet) {
+	eachName(f.Name, func(name string) {
+		set.Bool(name, true, f.Usage)
+	})
+}
+
+func (f BoolTFlag) getName() string {
+	return f.Name
+}
+
 type StringFlag struct {
 	Name  string
 	Value string
@@ -138,7 +195,16 @@ type StringFlag struct {
 }
 
 func (f StringFlag) String() string {
-	return fmt.Sprintf("%s '%v'\t%v", prefixedNames(f.Name), f.Value, f.Usage)
+	var fmtString string
+	fmtString = "%s %v\t%v"
+
+	if len(f.Value) > 0 {
+		fmtString = "%s '%v'\t%v"
+	} else {
+		fmtString = "%s %v\t%v"
+	}
+
+	return fmt.Sprintf(fmtString, prefixedNames(f.Name), f.Value, f.Usage)
 }
 
 func (f StringFlag) Apply(set *flag.FlagSet) {

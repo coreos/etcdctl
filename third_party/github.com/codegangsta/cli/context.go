@@ -13,6 +13,7 @@ import (
 // parsed command-line options.
 type Context struct {
 	App       *App
+	Command   Command
 	flagSet   *flag.FlagSet
 	globalSet *flag.FlagSet
 	setFlags  map[string]bool
@@ -20,7 +21,7 @@ type Context struct {
 
 // Creates a new context. For use in when invoking an App or Command action.
 func NewContext(app *App, set *flag.FlagSet, globalSet *flag.FlagSet) *Context {
-	return &Context{app, set, globalSet, nil}
+	return &Context{App: app, flagSet: set, globalSet: globalSet}
 }
 
 // Looks up the value of a local int flag, returns 0 if no int flag exists
@@ -38,6 +39,11 @@ func (c *Context) Bool(name string) bool {
 	return lookupBool(name, c.flagSet)
 }
 
+// Looks up the value of a local boolT flag, returns false if no bool flag exists
+func (c *Context) BoolT(name string) bool {
+	return lookupBoolT(name, c.flagSet)
+}
+
 // Looks up the value of a local string flag, returns "" if no string flag exists
 func (c *Context) String(name string) string {
 	return lookupString(name, c.flagSet)
@@ -51,6 +57,11 @@ func (c *Context) StringSlice(name string) []string {
 // Looks up the value of a local int slice flag, returns nil if no int slice flag exists
 func (c *Context) IntSlice(name string) []int {
 	return lookupIntSlice(name, c.flagSet)
+}
+
+// Looks up the value of a local generic flag, returns nil if no generic flag exists
+func (c *Context) Generic(name string) interface{} {
+	return lookupGeneric(name, c.flagSet)
 }
 
 // Looks up the value of a global int flag, returns 0 if no int flag exists
@@ -76,6 +87,11 @@ func (c *Context) GlobalStringSlice(name string) []string {
 // Looks up the value of a global int slice flag, returns nil if no int slice flag exists
 func (c *Context) GlobalIntSlice(name string) []int {
 	return lookupIntSlice(name, c.globalSet)
+}
+
+// Looks up the value of a global generic flag, returns nil if no generic flag exists
+func (c *Context) GlobalGeneric(name string) interface{} {
+	return lookupGeneric(name, c.globalSet)
 }
 
 // Determines if the flag was actually set exists
@@ -179,6 +195,14 @@ func lookupIntSlice(name string, set *flag.FlagSet) []int {
 	return nil
 }
 
+func lookupGeneric(name string, set *flag.FlagSet) interface{} {
+	f := set.Lookup(name)
+	if f != nil {
+		return f.Value
+	}
+	return nil
+}
+
 func lookupBool(name string, set *flag.FlagSet) bool {
 	f := set.Lookup(name)
 	if f != nil {
@@ -190,6 +214,27 @@ func lookupBool(name string, set *flag.FlagSet) bool {
 	}
 
 	return false
+}
+
+func lookupBoolT(name string, set *flag.FlagSet) bool {
+	f := set.Lookup(name)
+	if f != nil {
+		val, err := strconv.ParseBool(f.Value.String())
+		if err != nil {
+			return true
+		}
+		return val
+	}
+
+	return false
+}
+
+func copyFlag(name string, ff *flag.Flag, set *flag.FlagSet) {
+	switch ff.Value.(type) {
+	case *StringSlice:
+	default:
+		set.Set(name, ff.Value.String())
+	}
 }
 
 func normalizeFlags(flags []Flag, set *flag.FlagSet) error {
@@ -217,7 +262,9 @@ func normalizeFlags(flags []Flag, set *flag.FlagSet) error {
 		}
 		for _, name := range parts {
 			name = strings.Trim(name, " ")
-			set.Set(name, ff.Value.String())
+			if !visited[name] {
+				copyFlag(name, ff, set)
+			}
 		}
 	}
 	return nil
