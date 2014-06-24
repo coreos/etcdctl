@@ -2,7 +2,6 @@ package command
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"os/signal"
 
@@ -63,8 +62,7 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 			case resp := <-receiver:
 				printAll(resp, c.GlobalString("output"))
 			case err := <-errCh:
-				fmt.Println("Error:", err)
-				os.Exit(-1)
+				handleError(-1, err)
 			}
 		}
 
@@ -74,8 +72,7 @@ func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, erro
 		resp, err = client.Watch(key, uint64(index), recursive, nil, nil)
 
 		if err != nil {
-			fmt.Println("Error:", err)
-			os.Exit(ErrorFromEtcd)
+			handleError(ErrorFromEtcd, err)
 		}
 
 		if err != nil {

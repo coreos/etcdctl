@@ -146,7 +146,7 @@ $ etcdctl rm /foo/bar
 Delete an empty directory or a key-value pair
 
 ```
-$ etcdctl rmdir /path/to/dir 
+$ etcdctl rmdir /path/to/dir
 ```
 
 or
