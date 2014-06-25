@@ -2,6 +2,7 @@ package command
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"os"
@@ -67,8 +68,7 @@ func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 	// Sync cluster.
 	if sync {
 		if ok := client.SyncCluster(); !ok {
-			fmt.Println("Cannot sync with the cluster using peers", peers)
-			os.Exit(FailedToConnectToHost)
+			handleError(FailedToConnectToHost, errors.New("Cannot sync with the cluster using peers " + strings.Join(peers, ", ")))
 		}
 	}
 
@@ -88,8 +88,7 @@ func handlePrint(c *cli.Context, fn handlerFunc, pFn printFunc) {
 
 	// Print error and exit, if necessary.
 	if err != nil {
-		fmt.Println("Error:", err)
-		os.Exit(ErrorFromEtcd)
+		handleError(ErrorFromEtcd, err)
 	}
 
 	if resp != nil && pFn != nil {
