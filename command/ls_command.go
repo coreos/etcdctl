@@ -52,7 +52,9 @@ func lsCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) 
 // rPrint recursively prints out the nodes in the node structure.
 func rPrint(c *cli.Context, n *etcd.Node) {
 
-	if !(c.Bool("recursive") && c.Bool("nodir")) || !n.Dir {
+	// Printing the key happens if it's not a directory or if
+	// it is and we are allowing directories to be printed
+	if !c.Bool("nodir") || !n.Dir {
 		fmt.Println(n.Key)
 	}
 
