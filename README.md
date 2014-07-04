@@ -238,6 +238,15 @@ The following exit codes can be returned from etcdctl:
 5    500 error from etcd
 ```
 
+## Peers
+
+If your etcd cluster isn't available on `http://127.0.0.1:4001` you can specify
+a `--peers` flag or `ETCDCTL_PEERS` environment variable.
+
+```
+ETCDCTL_PEERS="http://10.0.28.1:4002" etcdctl set my-key to-a-value
+```
+
 ## Project Details
 
 ### Versioning
