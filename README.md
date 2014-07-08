@@ -124,7 +124,7 @@ $ etcdctl ls /adir
 /adir/key2
 ```
 
-Add `-recursive` to recursively list subdirectories encountered.
+Add `--recursive` to recursively list subdirectories encountered.
 
 ```
 $ etcdctl ls --recursive
@@ -134,6 +134,14 @@ $ etcdctl ls --recursive
 /adir/key2
 ```
 
+Directories can be excluded by using `--nodir`, leaving only the leaf keys.
+
+```
+$ etcdctl ls --recursive --nodir
+/akey
+/adir/key1
+/adir/key2
+```
 
 ### Deleting a key
 
