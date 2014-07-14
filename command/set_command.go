@@ -18,7 +18,7 @@ func init() {
 		Use:   "set",
 		Short: "set the value of a key.",
 		Run: func(cmd *cobra.Command, args []string) {
-			handleKey(cmd, args, setCommandFunc(c, client))
+			handleKey(cmd, args, setCommandFunc)
 		},
 	}
 
