@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/coreos/etcdctl/third_party/github.com/spf13/cobra"
 	"net/url"
 	"os"
 	"strings"
 
-	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
 	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
 )
 
-type handlerFunc func(*cli.Context, *etcd.Client) (*etcd.Response, error)
+type handlerFunc func(*cobra.Command, []string, *etcd.Client) (*etcd.Response, error)
 type printFunc func(*etcd.Response, string)
 
 // dumpCURL blindly dumps all curl output to os.Stderr
@@ -38,10 +38,10 @@ func createHttpPath(addr string) (string, error) {
 
 // rawhandle wraps the command function handlers and sets up the
 // environment but performs no output formatting.
-func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
-	sync := !c.GlobalBool("no-sync")
+func rawhandle(cmd *cobra.Command, args []string, fn handlerFunc) (*etcd.Response, error) {
+	sync := !noSyncFlag
 
-	peers := c.GlobalStringSlice("peers")
+	peers := peersFlag
 	// Append default peer address if not any
 	if len(peers) == 0 {
 		peers_from_environment := os.Getenv("ETCDCTL_PEERS")
@@ -67,30 +67,30 @@ func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 
 	client := etcd.NewClient(peers)
 
-	if c.GlobalBool("debug") {
+	if debugFlag {
 		go dumpCURL(client)
 	}
 
 	// Sync cluster.
 	if sync {
 		if ok := client.SyncCluster(); !ok {
-			handleError(FailedToConnectToHost, errors.New("Cannot sync with the cluster using peers " + strings.Join(peers, ", ")))
+			handleError(FailedToConnectToHost, errors.New("Cannot sync with the cluster using peers "+strings.Join(peers, ", ")))
 		}
 	}
 
-	if c.GlobalBool("debug") {
+	if debugFlag {
 		fmt.Fprintf(os.Stderr, "Cluster-Peers: %s\n",
 			strings.Join(client.GetCluster(), " "))
 	}
 
 	// Execute handler function.
-	return fn(c, client)
+	return fn(cmd, args, client)
 }
 
 // handlePrint wraps the command function handlers to parse global flags
 // into a client and to properly format the response objects.
-func handlePrint(c *cli.Context, fn handlerFunc, pFn printFunc) {
-	resp, err := rawhandle(c, fn)
+func handlePrint(cmd *cobra.Command, args []string, fn handlerFunc, pFn printFunc) {
+	resp, err := rawhandle(cmd, args, fn)
 
 	// Print error and exit, if necessary.
 	if err != nil {
@@ -98,23 +98,23 @@ func handlePrint(c *cli.Context, fn handlerFunc, pFn printFunc) {
 	}
 
 	if resp != nil && pFn != nil {
-		pFn(resp, c.GlobalString("output"))
+		pFn(resp, outputFlag)
 	}
 }
 
 // handleDir handles a request that wants to do operations on a single dir.
 // Dir cannot be printed out, so we set NIL print function here.
-func handleDir(c *cli.Context, fn handlerFunc) {
-	handlePrint(c, fn, nil)
+func handleDir(cmd *cobra.Command, args []string, fn handlerFunc) {
+	handlePrint(cmd, args, fn, nil)
 }
 
 // handleKey handles a request that wants to do operations on a single key.
-func handleKey(c *cli.Context, fn handlerFunc) {
-	handlePrint(c, fn, printKey)
+func handleKey(cmd *cobra.Command, args []string, fn handlerFunc) {
+	handlePrint(cmd, args, fn, printKey)
 }
 
-func handleAll(c *cli.Context, fn handlerFunc) {
-	handlePrint(c, fn, printAll)
+func handleAll(cmd *cobra.Command, args []string, fn handlerFunc) {
+	handlePrint(cmd, args, fn, printAll)
 }
 
 // printKey writes the etcd response to STDOUT in the given format.
