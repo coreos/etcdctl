@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	// flag "github.com/spf13/pflag"
 
 	"strings"
 )
@@ -45,6 +46,10 @@ func (i *peerList) Set(value string) error {
 	return nil
 }
 
+func (i *peerList) Type() string {
+	return "peerList"
+}
+
 func init() {
 
 	etcdctlRootCmd = &cobra.Command{
@@ -54,7 +59,7 @@ func init() {
 	etcdctlRootCmd.Flags().BoolVarP(&debugFlag, "debug", "", false, "output cURL commands which can be used to reproduce the request")
 	etcdctlRootCmd.Flags().BoolVarP(&noSyncFlag, "no-sync", "", true, "don't synchronize cluster information before sending request")
 	etcdctlRootCmd.Flags().StringVarP(&outputFlag, "output", "o", "simple", "output response in the given format (`simple` or `json`)")
-	etcdctlRootCmd.Flags().VarP(&peersFlag, "peers", "", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
+	etcdctlRootCmd.Flags().Var(&peersFlag, "peers", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
 } // end of init
 
 func CreateCommandTree() {
