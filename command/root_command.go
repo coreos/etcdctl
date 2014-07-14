@@ -67,6 +67,8 @@ func CreateCommandTree() {
 	etcdctlRootCmd.AddCommand(LsCommand())
 	etcdctlRootCmd.AddCommand(SetCommand())
 	etcdctlRootCmd.AddCommand(SetDirCommand())
+	etcdctlRootCmd.AddCommand(MakeCommand())
+	etcdctlRootCmd.AddCommand(MakeDirCommand())
 	etcdctlRootCmd.Execute()
 
 }

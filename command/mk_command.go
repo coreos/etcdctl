@@ -26,7 +26,7 @@ func init() {
 }
 
 // returns the mkCommand.
-func NewMakeCommand() *cobra.Command {
+func MakeCommand() *cobra.Command {
 	return mkCmd
 }
 
