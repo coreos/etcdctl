@@ -38,7 +38,7 @@ func printLs(resp *etcd.Response, format string) {
 		fmt.Println(resp.Node.Key)
 	}
 	for _, node := range resp.Node.Nodes {
-		rPrint(&node)
+		rPrint(node)
 	}
 }
 
@@ -58,6 +58,6 @@ func lsCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etc
 func rPrint(n *etcd.Node) {
 	fmt.Println(n.Key)
 	for _, node := range n.Nodes {
-		rPrint(&node)
+		rPrint(node)
 	}
 }
