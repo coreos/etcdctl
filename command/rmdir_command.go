@@ -1,29 +1,37 @@
 package command
 
-// import (
-// 	"errors"
+import (
+	"errors"
+	"github.com/coreos/go-etcd/etcd"
+	"github.com/spf13/cobra"
+)
 
-// 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
-// 	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
-// )
+var rmDirCmd *cobra.Command
 
-// // NewRemoveCommand returns the CLI command for "rmdir".
-// func NewRemoveDirCommand() cli.Command {
-// 	return cli.Command{
-// 		Name:	"rmdir",
-// 		Usage:	"removes the key if it is an empty directory or a key-value pair",
-// 		Action: func(c *cli.Context) {
-// 			handleDir(c, removeDirCommandFunc)
-// 		},
-// 	}
-// }
+// flags
+// there is a recursive in the rm command.
+func init() {
+	rmDirCmd = &cobra.Command{
+		Use:   "rmdir",
+		Short: "removes the key if it is an empty directory or a key-value pair",
+		Run: func(cmd *cobra.Command, args []string) {
+			handleDir(cmd, args, removeDirCommandFunc)
+		},
+	}
 
-// // removeDirCommandFunc executes the "rmdir" command.
-// func removeDirCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
-// 	if len(c.Args()) == 0 {
-// 		return nil, errors.New("Key required")
-// 	}
-// 	key := c.Args()[0]
+}
 
-// 	return client.DeleteDir(key)
-// }
+// RemoveDirCommand returns the CLI command for "rmdir".
+func RemoveDirCommand() *cobra.Command {
+	return rmDirCmd
+}
+
+// removeDirCommandFunc executes the "rmdir" command.
+func removeDirCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
+	if len(args) == 0 {
+		return nil, errors.New("Key required")
+	}
+	key := args[0]
+
+	return client.DeleteDir(key)
+}
