@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/coreos/etcdctl/command"
+	"github.com/joshi4/etcdctl/command"
 )
 
 func main() {

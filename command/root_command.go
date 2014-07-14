@@ -2,7 +2,7 @@ package command
 
 import (
 	"fmt"
-	"github.com/coreos/etcdctl/third_party/github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 
 	"strings"
 )
