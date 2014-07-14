@@ -15,7 +15,7 @@ var setDirTtlFlag int
 func init() {
 
 	setDirCmd = &cobra.Command{
-		Use:   "setdir",
+		Use:   "setDir",
 		Short: "create a new or existing directory",
 
 		Run: func(cmd *cobra.Command, args []string) {
