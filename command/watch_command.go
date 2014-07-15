@@ -1,85 +1,97 @@
 package command
 
-// import (
-// 	"errors"
-// 	"os"
-// 	"os/signal"
+import (
+	"errors"
+	"os"
+	"os/signal"
 
-// 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
-// 	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
-// )
+	"github.com/coreos/go-etcd/etcd"
+	"github.com/spf13/cobra"
+)
 
-// // NewWatchCommand returns the CLI command for "watch".
-// func NewWatchCommand() cli.Command {
-// 	return cli.Command{
-// 		Name:	"watch",
-// 		Usage:	"watch a key for changes",
-// 		Flags: []cli.Flag{
-// 			cli.BoolFlag{"forever", "forever watch a key until CTRL+C"},
-// 			cli.IntFlag{"after-index", 0, "watch after the given index"},
-// 			cli.BoolFlag{"recursive", "returns all values for key and child keys"},
-// 		},
-// 		Action: func(c *cli.Context) {
-// 			handleKey(c, watchCommandFunc)
-// 		},
-// 	}
-// }
+var watchCmd *cobra.Command
 
-// // watchCommandFunc executes the "watch" command.
-// func watchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
-// 	if len(c.Args()) == 0 {
-// 		return nil, errors.New("Key required")
-// 	}
-// 	key := c.Args()[0]
-// 	recursive := c.Bool("recursive")
-// 	forever := c.Bool("forever")
+//flags
+var foreverFlag bool
+var watchRecursiveFlag bool
+var watchAfterIndexFlag int
 
-// 	index := 0
-// 	if c.Int("after-index") != 0 {
-// 		index = c.Int("after-index") + 1
-// 	}
+func init() {
+	watchCmd = &cobra.Command{
+		Use:   "watch",
+		Short: "watch a key for changes",
+		Run: func(cmd *cobra.Command, args []string) {
+			handleKey(cmd, args, watchCommandFunc)
+		},
+	}
+	watchCmd.Flags().BoolVarP(&foreverFlag, "forever", "", false, "forever watch a key unitl CTRL+C")
+	watchCmd.Flags().BoolVarP(&watchRecursiveFlag, "recursive", "", false, "returns all values for key and child keys")
+	watchCmd.Flags().IntVarP(&watchAfterIndexFlag, "after-index", "", 0, "watch after the given index")
 
-// 	if forever {
-// 		sigch := make(chan os.Signal, 1)
-// 		signal.Notify(sigch, os.Interrupt)
-// 		stop := make(chan bool)
+}
 
-// 		go func() {
-// 			<-sigch
-// 			os.Exit(0)
-// 		}()
+// WatchCommand returns the CLI command for "watch".
+func WatchCommand() *cobra.Command {
+	return watchCmd
 
-// 		receiver := make(chan *etcd.Response)
-// 		errCh := make(chan error, 1)
+}
 
-// 		go func() {
-// 			_, err := client.Watch(key, uint64(index), recursive, receiver, stop)
-// 			errCh <- err
-// 		}()
+// watchCommandFunc executes the "watch" command.
+func watchCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
+	if len(args) == 0 {
+		return nil, errors.New("Key required")
+	}
+	key := args[0]
+	recursive := watchRecursiveFlag
+	forever := foreverFlag
 
-// 		for {
-// 			select {
-// 			case resp := <-receiver:
-// 				printAll(resp, c.GlobalString("output"))
-// 			case err := <-errCh:
-// 				handleError(-1, err)
-// 			}
-// 		}
+	index := 0
+	if watchAfterIndexFlag != 0 {
+		index = watchAfterIndexFlag + 1
+	}
 
-// 	} else {
-// 		var resp *etcd.Response
-// 		var err error
-// 		resp, err = client.Watch(key, uint64(index), recursive, nil, nil)
+	if forever {
+		sigch := make(chan os.Signal, 1)
+		signal.Notify(sigch, os.Interrupt)
+		stop := make(chan bool)
 
-// 		if err != nil {
-// 			handleError(ErrorFromEtcd, err)
-// 		}
+		go func() {
+			<-sigch
+			os.Exit(0)
+		}()
 
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		printAll(resp, c.GlobalString("output"))
-// 	}
+		receiver := make(chan *etcd.Response)
+		errCh := make(chan error, 1)
 
-// 	return nil, nil
-// }
+		go func() {
+			_, err := client.Watch(key, uint64(index), recursive, receiver, stop)
+			errCh <- err
+		}()
+
+		for {
+			select {
+			case resp := <-receiver:
+				//outputFlag is a flag(Persistent) var defined in root_command.go.
+				printAll(resp, outputFlag)
+			case err := <-errCh:
+				handleError(-1, err)
+			}
+		}
+
+	} else {
+		var resp *etcd.Response
+		var err error
+		resp, err = client.Watch(key, uint64(index), recursive, nil, nil)
+
+		if err != nil {
+			handleError(ErrorFromEtcd, err)
+		}
+
+		if err != nil {
+			return nil, err
+		}
+		printAll(resp, outputFlag)
+	}
+
+	return nil, nil
+}
