@@ -1,22 +1,46 @@
 package command
 
-// import (
-// 	"errors"
-// 	"fmt"
-// 	"io"
-// 	"os"
-// 	"os/exec"
-// 	"os/signal"
+import (
+	// "errors"
+	"fmt"
+	// "io"
+	// "os"
+	// "os/exec"
+	// "os/signal"
 
-// 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
-// 	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
-// )
+	// "github.com/coreos/go-etcd/etcd"
+	"github.com/spf13/cobra"
+)
+
+var execWatchCmd *cobra.Command
+
+//flags
+
+var execRecursive bool
+var execAfterIndex int
+
+func init() {
+	execWatchCmd = &cobra.Command{
+		Use:   "exec-watch",
+		Short: "watch a key for changes and run an executable",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println(args)
+		},
+	}
+
+	execWatchCmd.Flags().BoolVarP(&execRecursive, "recursive", "", false, "watch all values for key and child keys")
+	execWatchCmd.Flags().IntVarP(&execAfterIndex, "after-index", "", 0, "watch after the given index")
+}
+
+func ExecWatchCommand() *cobra.Command {
+	return execWatchCmd
+}
 
 // // NewExecWatchCommand returns the CLI command for "exec-watch".
 // func NewExecWatchCommand() cli.Command {
 // 	return cli.Command{
-// 		Name:	"exec-watch",
-// 		Usage:	"watch a key for changes and exec an executable",
+// 		Name:  "exec-watch",
+// 		Usage: "watch a key for changes and exec an executable",
 // 		Flags: []cli.Flag{
 // 			cli.IntFlag{"after-index", 0, "watch after the given index"},
 // 			cli.BoolFlag{"recursive", "watch all values for key and child keys"},
