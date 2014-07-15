@@ -58,7 +58,7 @@ func init() {
 	}
 	etcdctlRootCmd.Flags().BoolVarP(&debugFlag, "debug", "", false, "output cURL commands which can be used to reproduce the request")
 	etcdctlRootCmd.Flags().BoolVarP(&noSyncFlag, "no-sync", "", true, "don't synchronize cluster information before sending request")
-	etcdctlRootCmd.PersistentFlags().StringVarP(&outputFlag, "output", "o", "simple", "output response in the given format (`simple` or `json`)")
+	etcdctlRootCmd.PersistentFlags().StringVarP(&outputFlag, "output", "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
 	etcdctlRootCmd.Flags().Var(&peersFlag, "peers", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
 } // end of init
 
