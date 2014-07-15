@@ -1,33 +1,41 @@
 package command
 
-// import (
-// 	"errors"
+import (
+	"errors"
+	"github.com/coreos/go-etcd/etcd"
+	"github.com/spf13/cobra"
+)
 
-// 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
-// 	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
-// )
+var updateDirCmd *cobra.Command
 
-// // NewUpdateDirCommand returns the CLI command for "updateDir".
-// func NewUpdateDirCommand() cli.Command {
-// 	return cli.Command{
-// 		Name:	"updatedir",
-// 		Usage:	"update an existing directory",
-// 		Flags: []cli.Flag{
-// 			cli.IntFlag{"ttl", 0, "key time-to-live"},
-// 		},
-// 		Action: func(c *cli.Context) {
-// 			handleDir(c, updateDirCommandFunc)
-// 		},
-// 	}
-// }
+//flags
+var updateDirTTLFlag int
 
-// // updateDirCommandFunc executes the "updateDir" command.
-// func updateDirCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
-// 	if len(c.Args()) == 0 {
-// 		return nil, errors.New("Key required")
-// 	}
-// 	key := c.Args()[0]
-// 	ttl := c.Int("ttl")
+func init() {
+	updateDirCmd = &cobra.Command{
+		Use:   "updatedir",
+		Short: "update an existing directory",
+		Run: func(cmd *cobra.Command, args []string) {
+			handleDir(cmd, args, updateDirCommandFunc)
+		},
+	}
 
-// 	return client.UpdateDir(key, uint64(ttl))
-// }
+	updateDirCmd.Flags().IntVarP(&updateDirTTLFlag, "ttl", "", 0, "key time-to-live")
+
+}
+
+// UpdateDirCommand returns the sub command for "updatedir".
+func UpdateDirCommand() *cobra.Command {
+	return updateDirCmd
+}
+
+// updateDirCommandFunc executes the "updateDir" command.
+func updateDirCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
+	if len(args) == 0 {
+		return nil, errors.New("Key required")
+	}
+	key := args[0]
+	ttl := updateTTLFlag
+
+	return client.UpdateDir(key, uint64(ttl))
+}
