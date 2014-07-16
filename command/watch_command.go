@@ -6,7 +6,7 @@ import (
 	"os/signal"
 
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/spf13/cobra"
+	"github.com/joshi4/cobra"
 )
 
 var watchCmd *cobra.Command

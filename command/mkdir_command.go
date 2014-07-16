@@ -2,7 +2,7 @@ package command
 
 import (
 	"errors"
-	"github.com/spf13/cobra"
+	"github.com/joshi4/cobra"
 
 	"github.com/coreos/go-etcd/etcd"
 )
