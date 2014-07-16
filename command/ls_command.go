@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/spf13/cobra"
+	"github.com/joshi4/cobra"
 )
 
 var lsCmd *cobra.Command

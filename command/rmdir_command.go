@@ -3,7 +3,7 @@ package command
 import (
 	"errors"
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/spf13/cobra"
+	"github.com/joshi4/cobra"
 )
 
 var rmDirCmd *cobra.Command
