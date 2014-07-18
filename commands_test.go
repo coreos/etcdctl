@@ -10,19 +10,21 @@ const (
 	CMD = "etcdctl"
 )
 
+//any text in stderr is bad , and hence no regX required to capture that.
 type testFormat struct {
-	stdoutRegX *regexp.Regexp
-	// stderrRegX  *regexp.Regexp
+	stdoutRegX  *regexp.Regexp
 	commandLine *exec.Cmd
 }
 
 //Testing story so far:
 /*
-1. set a key
-2. get a key.
-3. ls and ls --recursive.
-4. test update
-5. test mkdir.
+-- set a key
+-- get a key.
+-- ls and ls --recursive.
+-- test update
+-- test get --consistent
+-- test mkdir.
+-- test rmdir.
 */
 
 var keyPattern string = "^[a-z]([A-Za-z0-9]*)"
@@ -67,6 +69,26 @@ var testCases []testFormat = []testFormat{
 		stdoutRegX:  regexp.MustCompile(lsPattern),
 		commandLine: exec.Command(CMD, "ls"),
 	},
+
+	testFormat{
+		stdoutRegX:  regexp.MustCompile(keyPattern),
+		commandLine: exec.Command(CMD, "update", "/coreOS/keys/dog", "woof"),
+	},
+
+	testFormat{
+		stdoutRegX:  regexp.MustCompile("^woof"),
+		commandLine: exec.Command(CMD, "get", "/coreOS/keys/dog", "--consistent"),
+	},
+
+	testFormat{
+		stdoutRegX:  regexp.MustCompile(""), // no output on successfull  mkdir
+		commandLine: exec.Command(CMD, "mkdir", "/core/dir1"),
+	},
+
+	testFormat{
+		stdoutRegX:  regexp.MustCompile(""), // no output on successfull  mkdir
+		commandLine: exec.Command(CMD, "rmdir", "/core/dir1"),
+	},
 }
 
 func TestAll(t *testing.T) {
@@ -99,6 +121,7 @@ func TestAll(t *testing.T) {
 
 		bufO := make([]byte, 100, 100)
 		stdout.Read(bufO)
+		// m, _ := stdout.Read(bufO)
 		// fmt.Println(ByteSliceToString(bufO[:m]))
 		if tst.stdoutRegX.Match(bufO) == false {
 			t.Fail()
