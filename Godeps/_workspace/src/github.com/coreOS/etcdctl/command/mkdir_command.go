@@ -2,9 +2,9 @@ package command
 
 import (
 	"errors"
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/joshi4/cobra"
+	"github.com/joshi4/cobra"
 
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/go-etcd/etcd"
 )
 
 var mkDirCmd *cobra.Command

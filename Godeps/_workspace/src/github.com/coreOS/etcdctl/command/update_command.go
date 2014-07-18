@@ -2,8 +2,8 @@ package command
 
 import (
 	"errors"
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/joshi4/cobra"
+	"github.com/coreos/go-etcd/etcd"
+	"github.com/joshi4/cobra"
 	"os"
 )
 
@@ -21,7 +21,7 @@ func init() {
 		},
 	}
 
-	updateCmd.Flags().IntVarP(&updateTTLFlag, "ttl", "", 0, "key time-to-live")
+	updateCmd.Flags().IntVarP(&updateTTLFlag, "ttl", "ttl", 0, "key time-to-live")
 
 }
 

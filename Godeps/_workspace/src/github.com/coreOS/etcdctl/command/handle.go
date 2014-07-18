@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/joshi4/cobra"
+	"github.com/joshi4/cobra"
 	"net/url"
 	"os"
 	"strings"
 
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/go-etcd/etcd"
 )
 
 type handlerFunc func(*cobra.Command, []string, *etcd.Client) (*etcd.Response, error)

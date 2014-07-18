@@ -5,8 +5,8 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/joshi4/cobra"
+	"github.com/coreos/go-etcd/etcd"
+	"github.com/joshi4/cobra"
 )
 
 var watchCmd *cobra.Command
