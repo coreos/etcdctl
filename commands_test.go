@@ -3,12 +3,66 @@ package main
 import (
 	"fmt"
 	"os/exec"
+	"regexp"
 	"testing"
 )
 
 const (
 	CMD = "etcdctl"
 )
+
+type testFormat struct {
+	stdout      *regexp.Regexp
+	stderr      *regexp.Regexp
+	commandLine *exec.Cmd
+}
+
+var testCases []testFormat = []testFormat{
+	testFormat{
+		stdoutRegX: regexp.MustCompile("/([a-z][a-z][0-9]*\n?)*"),
+		stderrRegX: regexp.MustCompile("*"),
+		cmd:        exec.Command(CMD, "set", "/foo", "bar"),
+	},
+}
+
+func TestAll(t *testing.T) {
+	for index, tst := range testCases {
+
+		stdout, err := cmd.StdoutPipe()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		stderr, err := cmd.StderrPipe()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if err := cmd.Start(); err != nil {
+			t.Fatal(err)
+		}
+
+		buf := make([]byte, 100, 100)
+		n, err := stderr.Read(buf)
+		if n > 0 {
+			t.Fail()
+			t.Log(CToGoString(buf[:n]))
+		}
+
+		if err != nil && n > 0 {
+			t.Fatal(err)
+		}
+
+		bufO := make([]byte, 100, 100)
+		stderr.Read(bufO)
+
+		if stdoutRegX.Match(bufO) == false {
+			t.Fail()
+			t.Log("Stdout pattern does not match for test number %d", index)
+		}
+
+	}
+}
 
 // functional tests: requires you to have etcd running on your machine locally.
 // also requires a etcdctl executable which is located in your $GOBIN ( which should be a part of your #PATH)
@@ -27,45 +81,45 @@ const (
 // 	}
 // }
 
-func TestGetcommand(t *testing.T) {
+// func TestGetcommand(t *testing.T) {
 
-	cmd := exec.Command("etcdctl", "get", "/coreOS/keys/barz")
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		t.Fatal(err)
-	}
+// 	cmd := exec.Command("etcdctl", "get", "/coreOS/keys/barz")
+// 	stdout, err := cmd.StdoutPipe()
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		t.Fatal(err)
-	}
+// 	stderr, err := cmd.StderrPipe()
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	if err := cmd.Start(); err != nil {
-		t.Fatal(err)
-	}
+// 	if err := cmd.Start(); err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	buf := make([]byte, 100, 100)
-	n, err := stderr.Read(buf)
-	if n > 0 {
-		t.Error(CToGoString(buf[:n]))
-	}
+// 	buf := make([]byte, 100, 100)
+// 	n, err := stderr.Read(buf)
+// 	if n > 0 {
+// 		t.Error(CToGoString(buf[:n]))
+// 	}
 
-	if err != nil {
-		t.Fatal(err)
-	}
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	n, _ = stdout.Read(buf)
+// 	n, _ = stdout.Read(buf)
 
-	if n > 0 {
-		fmt.Println("success: ")
-		fmt.Println(CToGoString(buf[:n]))
+// 	if n > 0 {
+// 		fmt.Println("success: ")
+// 		fmt.Println(CToGoString(buf[:n]))
 
-	}
-	if err := cmd.Wait(); err != nil {
-		t.Fatal(err)
-	}
+// 	}
+// 	if err := cmd.Wait(); err != nil {
+// 		t.Fatal(err)
+// 	}
 
-}
+// }
 
 // from stackoverflow:
 // http://stackoverflow.com/questions/14230145/what-is-the-best-way-to-convert-byte-array-to-string
