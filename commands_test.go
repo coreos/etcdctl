@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os/exec"
 	"regexp"
 	"testing"
@@ -12,22 +11,22 @@ const (
 )
 
 type testFormat struct {
-	stdout      *regexp.Regexp
-	stderr      *regexp.Regexp
+	stdoutRegX *regexp.Regexp
+	// stderrRegX  *regexp.Regexp
 	commandLine *exec.Cmd
 }
 
 var testCases []testFormat = []testFormat{
 	testFormat{
-		stdoutRegX: regexp.MustCompile("/([a-z][a-z][0-9]*\n?)*"),
-		stderrRegX: regexp.MustCompile("*"),
-		cmd:        exec.Command(CMD, "set", "/foo", "bar"),
+		stdoutRegX: regexp.MustCompile("([a-z][a-z0-9]*)*"),
+		// stderrRegX:  regexp.MustCompile(""),
+		commandLine: exec.Command(CMD, "set", "/foo", "bar"),
 	},
 }
 
 func TestAll(t *testing.T) {
 	for index, tst := range testCases {
-
+		cmd := tst.commandLine
 		stdout, err := cmd.StdoutPipe()
 		if err != nil {
 			t.Fatal(err)
@@ -54,11 +53,15 @@ func TestAll(t *testing.T) {
 		}
 
 		bufO := make([]byte, 100, 100)
-		stderr.Read(bufO)
+		stdout.Read(bufO)
 
-		if stdoutRegX.Match(bufO) == false {
+		if tst.stdoutRegX.Match(bufO) == false {
 			t.Fail()
-			t.Log("Stdout pattern does not match for test number %d", index)
+			t.Logf("Stdout pattern does not match for test number %d", index)
+		}
+
+		if err := cmd.Wait(); err != nil {
+			t.Fatal(err)
 		}
 
 	}
