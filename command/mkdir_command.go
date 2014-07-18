@@ -20,7 +20,6 @@ func init() {
 		},
 	}
 
-	// ttl does not seem to be applicable for directories ??
 	mkDirCmd.Flags().IntVarP(&mkDirTtlFlag, "ttl", "", 0, "directory time-to-live")
 
 }
