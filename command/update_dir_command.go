@@ -36,7 +36,7 @@ func updateDirCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client
 		return nil, errors.New("Key required")
 	}
 	key := args[0]
-	ttl := updateTTLFlag
+	ttl := updateDirTTLFlag
 
 	fmt.Println("key is : ", key)
 	fmt.Println("ttl value is : ", ttl)
