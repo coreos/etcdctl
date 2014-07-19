@@ -4,8 +4,8 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/coreOS/etcdctl/command",
-			"Comment": "v0.4.4-49-g4621f06",
-			"Rev": "4621f06d2adc4c791676408196adb2f4ff4be76c"
+			"Comment": "v0.4.4-51-g5643d44",
+			"Rev": "5643d448b993a827ae1dae551edb86ebec46ce3e"
 		},
 		{
 			"ImportPath": "github.com/coreos/go-etcd/etcd",

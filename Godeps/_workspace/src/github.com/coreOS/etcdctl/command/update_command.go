@@ -21,7 +21,7 @@ func init() {
 		},
 	}
 
-	updateCmd.Flags().IntVarP(&updateTTLFlag, "ttl", "ttl", 0, "key time-to-live")
+	updateCmd.Flags().IntVarP(&updateTTLFlag, "ttl", "", 0, "key time-to-live")
 
 }
 
