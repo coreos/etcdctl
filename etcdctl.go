@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreOS/etcdctl/command"
+	"github.com/coreos/etcdctl/command"
 )
 
 func main() {
