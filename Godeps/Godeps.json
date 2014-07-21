@@ -3,7 +3,7 @@
 	"GoVersion": "go1.3",
 	"Deps": [
 		{
-			"ImportPath": "github.com/coreOS/etcdctl/command",
+			"ImportPath": "github.com/coreos/etcdctl/command",
 			"Comment": "v0.4.4-54-g6d407d4",
 			"Rev": "6d407d47cdefb035e09fe61c0aeb314a82cab0f5"
 		},
