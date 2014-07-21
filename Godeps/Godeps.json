@@ -14,10 +14,6 @@
 		{
 			"ImportPath": "github.com/joshi4/goflag",
 			"Rev": "014b65a7ee99a5115e485fb76903b244ebccad92"
-		},
-		{
-			"ImportPath": "github.com/joshi4/pflag",
-			"Rev": "76dbee9101ec450767a3ee0c86df73c505a5362a"
 		}
 	]
 }
