@@ -22,9 +22,9 @@ func init() {
 		},
 	}
 
-	setCmd.Flags().IntVarP(&ttlFlag, "ttl", "", 0, "key time-to-live ")
-	setCmd.Flags().StringVarP(&swapWithValueFlag, "swap-with-value", "", "", "previous value")
-	setCmd.Flags().IntVarP(&swapWithIndexFlag, "swap-with-index", "", 0, "previous index")
+	setCmd.Flags().IntVar(&ttlFlag, "ttl", 0, "key time-to-live ")
+	setCmd.Flags().StringVar(&swapWithValueFlag, "swap-with-value", "", "previous value")
+	setCmd.Flags().IntVar(&swapWithIndexFlag, "swap-with-index", 0, "previous index")
 }
 
 // NewSetCommand returns the CLI command for "set".

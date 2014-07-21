@@ -25,10 +25,10 @@ func init() {
 		},
 	}
 
-	rmCmd.Flags().BoolVarP(&rmDirFlag, "dir", "", false, "removes the key if it is an empty directory or a key-value pair")
-	rmCmd.Flags().BoolVarP(&rmRecursiveFlag, "recursive", "", false, "removes the key and all child keys(if it is a directory)")
-	rmCmd.Flags().StringVarP(&rmWithValueFlag, "with-value", "", "", "previous value")
-	rmCmd.Flags().IntVarP(&rmWithIndexFlag, "with-index", "", 0, "previous index")
+	rmCmd.Flags().BoolVar(&rmDirFlag, "dir", false, "removes the key if it is an empty directory or a key-value pair")
+	rmCmd.Flags().BoolVar(&rmRecursiveFlag, "recursive", false, "removes the key and all child keys(if it is a directory)")
+	rmCmd.Flags().StringVar(&rmWithValueFlag, "with-value", "", "previous value")
+	rmCmd.Flags().IntVar(&rmWithIndexFlag, "with-index", 0, "previous index")
 
 }
 

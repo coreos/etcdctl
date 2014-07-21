@@ -21,7 +21,7 @@ func init() {
 		},
 	}
 
-	updateDirCmd.Flags().IntVarP(&updateDirTTLFlag, "ttl", "", 0, "key time-to-live")
+	updateDirCmd.Flags().IntVar(&updateDirTTLFlag, "ttl", 0, "key time-to-live")
 
 }
 

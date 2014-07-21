@@ -23,9 +23,9 @@ func init() {
 		},
 	}
 
-	getCmd.Flags().BoolVarP(&getConsistentFlag, "consistent", "", false,
+	getCmd.Flags().BoolVar(&getConsistentFlag, "consistent", false,
 		"send request to the leader, thereby guranteeing that any earlier writes will be seen by the read")
-	getCmd.Flags().BoolVarP(&getSortFlag, "sort", "", false, "returns result in sorted order")
+	getCmd.Flags().BoolVar(&getSortFlag, "sort", false, "returns result in sorted order")
 }
 
 // NewGetCommand returns the CLI command for "get".

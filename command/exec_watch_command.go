@@ -30,8 +30,8 @@ func init() {
 		},
 	}
 
-	execWatchCmd.Flags().BoolVarP(&execRecursiveFlag, "recursive", "", false, "watch all values for key and child keys")
-	execWatchCmd.Flags().IntVarP(&execAfterIndexFlag, "after-index", "", 0, "watch after the given index")
+	execWatchCmd.Flags().BoolVar(&execRecursiveFlag, "recursive", false, "watch all values for key and child keys")
+	execWatchCmd.Flags().IntVar(&execAfterIndexFlag, "after-index", 0, "watch after the given index")
 }
 
 func ExecWatchCommand() *cobra.Command {

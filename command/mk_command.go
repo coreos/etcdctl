@@ -21,7 +21,7 @@ func init() {
 		},
 	}
 
-	mkCmd.Flags().IntVarP(&mkTtlFlag, "ttl", "", 0, "key time-to-live")
+	mkCmd.Flags().IntVar(&mkTtlFlag, "ttl", 0, "key time-to-live")
 
 }
 

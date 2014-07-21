@@ -19,7 +19,7 @@ func init() {
 		},
 	}
 
-	lsCmd.Flags().BoolVarP(&lsRecursiveFlag, "recursive", "", false, "returns all values for key and child keys")
+	lsCmd.Flags().BoolVar(&lsRecursiveFlag, "recursive", false, "returns all values for key and child keys")
 }
 
 func LsCommand() *cobra.Command {

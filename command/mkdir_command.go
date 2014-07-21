@@ -20,7 +20,7 @@ func init() {
 		},
 	}
 
-	mkDirCmd.Flags().IntVarP(&mkDirTtlFlag, "ttl", "", 0, "directory time-to-live")
+	mkDirCmd.Flags().IntVar(&mkDirTtlFlag, "ttl", 0, "directory time-to-live")
 
 }
 

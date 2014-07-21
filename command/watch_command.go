@@ -24,9 +24,9 @@ func init() {
 			handleKey(cmd, args, watchCommandFunc)
 		},
 	}
-	watchCmd.Flags().BoolVarP(&foreverFlag, "forever", "", false, "forever watch a key unitl CTRL+C")
-	watchCmd.Flags().BoolVarP(&watchRecursiveFlag, "recursive", "", false, "returns all values for key and child keys")
-	watchCmd.Flags().IntVarP(&watchAfterIndexFlag, "after-index", "", 0, "watch after the given index")
+	watchCmd.Flags().BoolVar(&foreverFlag, "forever", false, "forever watch a key unitl CTRL+C")
+	watchCmd.Flags().BoolVar(&watchRecursiveFlag, "recursive", false, "returns all values for key and child keys")
+	watchCmd.Flags().IntVar(&watchAfterIndexFlag, "after-index", 0, "watch after the given index")
 
 }
 

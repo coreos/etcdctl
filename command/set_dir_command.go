@@ -23,7 +23,7 @@ func init() {
 		},
 	}
 
-	setDirCmd.Flags().IntVarP(&setDirTtlFlag, "ttl", "", 0, "key time-to-live ")
+	setDirCmd.Flags().IntVar(&setDirTtlFlag, "ttl", 0, "key time-to-live ")
 }
 
 // NewSetDirCommand returns the CLI command for "setDir".
