@@ -2,7 +2,6 @@ package command
 
 import (
 	"errors"
-	"fmt"
 	"github.com/coreos/go-etcd/etcd"
 	"github.com/joshi4/cobra"
 )
@@ -37,9 +36,6 @@ func updateDirCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client
 	}
 	key := args[0]
 	ttl := updateDirTTLFlag
-
-	fmt.Println("key is : ", key)
-	fmt.Println("ttl value is : ", ttl)
 
 	return client.UpdateDir(key, uint64(ttl))
 }

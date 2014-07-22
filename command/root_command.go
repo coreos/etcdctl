@@ -54,16 +54,6 @@ func init() {
 	etcdctlRootCmd = &cobra.Command{
 		Use:   "etcdctl",
 		Short: "A simple command line client for etcd.",
-		// Run: func(cmd *cobra.Command, args []string) {
-		// 	_, a, err := cmd.Find(args)
-		// 	if err != nil {
-		// 		handleError(MalformedEtcdctlArguments, err)
-		// 	}
-
-		// 	// fmt.Println("Command found is ", c.Name())
-		// 	fmt.Println("args are ", a)
-
-		// },
 	}
 	etcdctlRootCmd.PersistentFlags().BoolVar(&debugFlag, "debug", false, "output cURL commands which can be used to reproduce the request")
 	etcdctlRootCmd.Flags().BoolVar(&noSyncFlag, "no-sync", true, "don't synchronize cluster information before sending request")

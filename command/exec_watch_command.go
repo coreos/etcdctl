@@ -24,8 +24,6 @@ func init() {
 		Use:   "exec-watch",
 		Short: "watch a key for changes and run an executable",
 		Run: func(cmd *cobra.Command, args []string) {
-			// fmt.Println(cmd.Flags().Args())
-			// fmt.Println(args)
 			handleKey(cmd, args, execWatchCommandFunc)
 		},
 	}
@@ -37,21 +35,6 @@ func init() {
 func ExecWatchCommand() *cobra.Command {
 	return execWatchCmd
 }
-
-// // NewExecWatchCommand returns the CLI command for "exec-watch".
-// func NewExecWatchCommand() cli.Command {
-// 	return cli.Command{
-// 		Name:  "exec-watch",
-// 		Usage: "watch a key for changes and exec an executable",
-// 		Flags: []cli.Flag{
-// 			cli.IntFlag{"after-index", 0, "watch after the given index"},
-// 			cli.BoolFlag{"recursive", "watch all values for key and child keys"},
-// 		},
-// 		Action: func(c *cli.Context) {
-// 			handleKey(c, execWatchCommandFunc)
-// 		},
-// 	}
-// }
 
 // execWatchCommandFunc executes the "exec-watch" command.
 func execWatchCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
@@ -71,15 +54,10 @@ func execWatchCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client
 	index := 0
 	if execAfterIndexFlag != 0 {
 		index = execAfterIndexFlag + 1
-		// key = args[0]
-		// cmdArgs = args[2:]
+
 	}
 
 	recursive := execRecursiveFlag
-	// if recursive != false {
-	// 	key = args[0]
-	// 	cmdArgs = args[2:]
-	// }
 
 	sigch := make(chan os.Signal, 1)
 	signal.Notify(sigch, os.Interrupt)
