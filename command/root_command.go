@@ -3,7 +3,6 @@ package command
 import (
 	"fmt"
 	"github.com/joshi4/cobra"
-	// flag "github.com/spf13/pflag"
 
 	"strings"
 )
@@ -55,13 +54,23 @@ func init() {
 	etcdctlRootCmd = &cobra.Command{
 		Use:   "etcdctl",
 		Short: "A simple command line client for etcd.",
+		// Run: func(cmd *cobra.Command, args []string) {
+		// 	_, a, err := cmd.Find(args)
+		// 	if err != nil {
+		// 		handleError(MalformedEtcdctlArguments, err)
+		// 	}
+
+		// 	// fmt.Println("Command found is ", c.Name())
+		// 	fmt.Println("args are ", a)
+
+		// },
 	}
 	etcdctlRootCmd.PersistentFlags().BoolVar(&debugFlag, "debug", false, "output cURL commands which can be used to reproduce the request")
 	etcdctlRootCmd.Flags().BoolVar(&noSyncFlag, "no-sync", true, "don't synchronize cluster information before sending request")
-	etcdctlRootCmd.PersistentFlags().StringVar(&outputFlag, "output", "simple", "output response in the given format (`simple` or `json` or `extended`)")
-	etcdctlRootCmd.PersistentFlags().StringVar(&outputFlag, "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
-	etcdctlRootCmd.Flags().Var(&peersFlag, "peers", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
-	etcdctlRootCmd.Flags().Var(&peersFlag, "C", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
+	etcdctlRootCmd.PersistentFlags().StringVarP(&outputFlag, "output", "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
+	// etcdctlRootCmd.PersistentFlags().StringVar(&outputFlag, "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
+	etcdctlRootCmd.Flags().VarP(&peersFlag, "peers", "C", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
+	// etcdctlRootCmd.Flags().Var(&peersFlag, "C", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
 } // end of init
 
 func CreateCommandTree() {
@@ -78,6 +87,8 @@ func CreateCommandTree() {
 	etcdctlRootCmd.AddCommand(UpdateDirCommand())
 	etcdctlRootCmd.AddCommand(WatchCommand())
 	etcdctlRootCmd.AddCommand(ExecWatchCommand())
+	// etcdctlRootCmd.DebugFlags()
+	// etcdctlRootCmd.Flags().SetInterspersed(true)
 	etcdctlRootCmd.Execute()
 
 }
