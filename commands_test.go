@@ -71,6 +71,18 @@ var testCases []testFormat = []testFormat{
 	},
 
 	testFormat{
+
+		stdoutRegX:  regexp.MustCompile(lsPattern),
+		commandLine: exec.Command(CMD, "ls", "--recursive=F"),
+	},
+
+	testFormat{
+
+		stdoutRegX:  regexp.MustCompile(lsPattern),
+		commandLine: exec.Command(CMD, "ls", "-recursive=0"),
+	},
+
+	testFormat{
 		stdoutRegX:  regexp.MustCompile(keyPattern),
 		commandLine: exec.Command(CMD, "update", "/coreOS/keys/dog", "woof"),
 	},
