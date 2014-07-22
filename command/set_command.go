@@ -2,6 +2,7 @@ package command
 
 import (
 	"errors"
+	"fmt"
 	"github.com/joshi4/cobra"
 	"os"
 
@@ -46,6 +47,10 @@ func setCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*et
 	ttl := ttlFlag
 	prevValue := swapWithValueFlag
 	prevIndex := swapWithIndexFlag
+
+	fmt.Println("previous value flag is set to  ", prevValue)
+	fmt.Println("prevIndex value flag is set to ", prevIndex)
+	fmt.Println("ttl value is ", ttlFlag)
 
 	if prevValue == "" && prevIndex == 0 {
 		return client.Set(key, value, uint64(ttl))
