@@ -56,10 +56,10 @@ func init() {
 		Short: "A simple command line client for etcd.",
 	}
 	etcdctlRootCmd.PersistentFlags().BoolVar(&debugFlag, "debug", false, "output cURL commands which can be used to reproduce the request")
-	etcdctlRootCmd.Flags().BoolVar(&noSyncFlag, "no-sync", true, "don't synchronize cluster information before sending request")
+	etcdctlRootCmd.PersistentFlags().BoolVar(&noSyncFlag, "no-sync", true, "don't synchronize cluster information before sending request")
 	etcdctlRootCmd.PersistentFlags().StringVarP(&outputFlag, "output", "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
 	// etcdctlRootCmd.PersistentFlags().StringVar(&outputFlag, "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
-	etcdctlRootCmd.Flags().VarP(&peersFlag, "peers", "C", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
+	etcdctlRootCmd.PersistentFlags().VarP(&peersFlag, "peers", "C", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
 	// etcdctlRootCmd.Flags().Var(&peersFlag, "C", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
 } // end of init
 
