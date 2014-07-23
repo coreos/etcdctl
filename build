@@ -1,11 +1,15 @@
 #!/bin/sh -e
 
-if [ ! -h src/github.com/coreos/etcdctl ]; then
-	mkdir -p src/github.com/coreos/
-	ln -s ../../.. src/github.com/coreos/etcdctl
+
+
+export GOPATH=${PWD}/Godeps/_workspace
+export GOBIN=${PWD}/bin
+
+if [ ! -h $GOPATH/src/github.com/coreos/etcdctl ]; then
+    mkdir -p $GOPATH/src/github.com/coreos/
+    ln -s ${PWD} $GOPATH/src/github.com/coreos/etcdctl
 fi
 
-export GOBIN=${PWD}/bin
-export GOPATH=${PWD}
+eval $(go env)
 
 go install github.com/coreos/etcdctl
