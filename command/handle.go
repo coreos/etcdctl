@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/joshi4/cobra"
+	"github.com/coreos/cobra"
 	"net/url"
 	"os"
 	"strings"

@@ -3,8 +3,8 @@ package command
 import (
 	"fmt"
 
+	"github.com/coreos/cobra"
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/joshi4/cobra"
 )
 
 var lsCmd *cobra.Command

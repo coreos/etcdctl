@@ -2,8 +2,8 @@ package command
 
 import (
 	"errors"
+	"github.com/coreos/cobra"
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/joshi4/cobra"
 	"os"
 )
 

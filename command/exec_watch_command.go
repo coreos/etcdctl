@@ -8,8 +8,8 @@ import (
 	"os/exec"
 	"os/signal"
 
+	"github.com/coreos/cobra"
 	"github.com/coreos/go-etcd/etcd"
-	"github.com/joshi4/cobra"
 )
 
 var execWatchCmd *cobra.Command
