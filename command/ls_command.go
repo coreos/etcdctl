@@ -3,26 +3,32 @@ package command
 import (
 	"fmt"
 
-	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
-	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/go-etcd/etcd"
+	"github.com/joshi4/cobra"
 )
 
-func NewLsCommand() cli.Command {
-	return cli.Command{
-		Name:	"ls",
-		Usage:	"retrieve a directory",
-		Flags: []cli.Flag{
-			cli.BoolFlag{"recursive", "returns all values for key and child keys"},
-		},
-		Action: func(c *cli.Context) {
-			handleLs(c, lsCommandFunc)
+var lsCmd *cobra.Command
+var lsRecursiveFlag bool
+
+func init() {
+	lsCmd = &cobra.Command{
+		Use:   "ls",
+		Short: "retrieve a directory",
+		Run: func(cmd *cobra.Command, args []string) {
+			handleLs(cmd, args, lsCommandFunc)
 		},
 	}
+
+	lsCmd.Flags().BoolVar(&lsRecursiveFlag, "recursive", false, "returns all values for key and child keys")
+}
+
+func LsCommand() *cobra.Command {
+	return lsCmd
 }
 
 // handleLs handles a request that intends to do ls-like operations.
-func handleLs(c *cli.Context, fn handlerFunc) {
-	handlePrint(c, fn, printLs)
+func handleLs(cmd *cobra.Command, args []string, fn handlerFunc) {
+	handlePrint(cmd, args, fn, printLs)
 }
 
 // printLs writes a response out in a manner similar to the `ls` command in unix.
@@ -32,17 +38,17 @@ func printLs(resp *etcd.Response, format string) {
 		fmt.Println(resp.Node.Key)
 	}
 	for _, node := range resp.Node.Nodes {
-		rPrint(&node)
+		rPrint(node)
 	}
 }
 
 // lsCommandFunc executes the "ls" command.
-func lsCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
+func lsCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
 	key := "/"
-	if len(c.Args()) != 0 {
-		key = c.Args()[0]
+	if len(args) != 0 {
+		key = args[0]
 	}
-	recursive := c.Bool("recursive")
+	recursive := lsRecursiveFlag
 
 	// Retrieve the value from the server.
 	return client.Get(key, false, recursive)
@@ -52,6 +58,6 @@ func lsCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) 
 func rPrint(n *etcd.Node) {
 	fmt.Println(n.Key)
 	for _, node := range n.Nodes {
-		rPrint(&node)
+		rPrint(node)
 	}
 }

@@ -2,32 +2,42 @@ package command
 
 import (
 	"errors"
-
-	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
-	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/go-etcd/etcd"
+	"github.com/joshi4/cobra"
 )
 
-// NewSetDirCommand returns the CLI command for "setDir".
-func NewSetDirCommand() cli.Command {
-	return cli.Command{
-		Name:	"setdir",
-		Usage:	"create a new or existing directory",
-		Flags: []cli.Flag{
-			cli.IntFlag{"ttl", 0, "key time-to-live"},
-		},
-		Action: func(c *cli.Context) {
-			handleDir(c, setDirCommandFunc)
+var setDirCmd *cobra.Command
+var setDirTtlFlag int
+
+// The ttl flag does not seem to be supported on directories , yet it was listed as a flag
+// in the previous implementation. hence I have chosen to keep it for now.
+
+func init() {
+
+	setDirCmd = &cobra.Command{
+		Use:   "setdir",
+		Short: "create a new directory",
+
+		Run: func(cmd *cobra.Command, args []string) {
+			handleDir(cmd, args, setDirCommandFunc)
 		},
 	}
+
+	setDirCmd.Flags().IntVar(&setDirTtlFlag, "ttl", 0, "key time-to-live ")
 }
 
-// setDirCommandFunc executes the "setDir" command.
-func setDirCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
-	if len(c.Args()) == 0 {
+// NewSetDirCommand returns the CLI command for "setDir".
+func SetDirCommand() *cobra.Command {
+
+	return setDirCmd
+}
+
+func setDirCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
+	if len(args) == 0 {
 		return nil, errors.New("Key required")
 	}
-	key := c.Args()[0]
-	ttl := c.Int("ttl")
+	key := args[0]
+	ttl := ttlFlag
 
 	return client.SetDir(key, uint64(ttl))
 }

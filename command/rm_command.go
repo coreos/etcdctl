@@ -2,41 +2,54 @@ package command
 
 import (
 	"errors"
-
-	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
-	"github.com/coreos/etcdctl/third_party/github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/go-etcd/etcd"
+	"github.com/joshi4/cobra"
 )
 
-// NewRemoveCommand returns the CLI command for "rm".
-func NewRemoveCommand() cli.Command {
-	return cli.Command{
-		Name:	"rm",
-		Usage:	"remove a key",
-		Flags: []cli.Flag{
-			cli.BoolFlag{"dir", "removes the key if it is an empty directory or a key-value pair"},
-			cli.BoolFlag{"recursive", "removes the key and all child keys(if it is a directory)"},
-			cli.StringFlag{"with-value", "", "previous value"},
-			cli.IntFlag{"with-index", 0, "previous index"},
-		},
-		Action: func(c *cli.Context) {
-			handleAll(c, removeCommandFunc)
+var rmCmd *cobra.Command
+
+// flag variables
+var rmDirFlag bool
+var rmRecursiveFlag bool
+var rmWithValueFlag string
+var rmWithIndexFlag int
+
+func init() {
+
+	rmCmd = &cobra.Command{
+		Use:   "rm",
+		Short: "remove a key",
+
+		Run: func(cmd *cobra.Command, args []string) {
+			handleAll(cmd, args, removeCommandFunc)
 		},
 	}
+
+	rmCmd.Flags().BoolVar(&rmDirFlag, "dir", false, "removes the key if it is an empty directory or a key-value pair")
+	rmCmd.Flags().BoolVar(&rmRecursiveFlag, "recursive", false, "removes the key and all child keys(if it is a directory)")
+	rmCmd.Flags().StringVar(&rmWithValueFlag, "with-value", "", "previous value")
+	rmCmd.Flags().IntVar(&rmWithIndexFlag, "with-index", 0, "previous index")
+
+}
+
+// RemoveCommand returns the *cobra.Command for "rm".
+func RemoveCommand() *cobra.Command {
+	return rmCmd
 }
 
 // removeCommandFunc executes the "rm" command.
-func removeCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, error) {
-	if len(c.Args()) == 0 {
+func removeCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
+	if len(args) == 0 {
 		return nil, errors.New("Key required")
 	}
-	key := c.Args()[0]
-	recursive := c.Bool("recursive")
-	dir := c.Bool("dir")
+	key := args[0]
+	recursive := rmRecursiveFlag
+	dir := rmDirFlag
 
 	// TODO: distinguish with flag is not set and empty flag
 	// the cli pkg need to provide this feature
-	prevValue := c.String("with-value")
-	prevIndex := uint64(c.Int("with-index"))
+	prevValue := rmWithValueFlag
+	prevIndex := uint64(rmWithIndexFlag)
 
 	if prevValue != "" || prevIndex != 0 {
 		return client.CompareAndDelete(key, prevValue, prevIndex)
