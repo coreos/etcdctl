@@ -24,3 +24,5 @@ _testmain.go
 /src
 /pkg
 /bin
+
+Godeps/_workspace/src/github.com/coreos/etcdctl
