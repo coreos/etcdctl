@@ -1,0 +1,22 @@
+{
+	"ImportPath": "github.com/coreos/etcdctl",
+	"GoVersion": "go1.3",
+	"Packages": [
+		"github.com/coreos/etcdctl/command"
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/coreos/cobra",
+			"Rev": "f00e739baec330f2613df8f48d8d8e7dccf4b34f"
+		},
+		{
+			"ImportPath": "github.com/coreos/go-etcd/etcd",
+			"Comment": "v0.2.0-rc1-114-g7745cfd",
+			"Rev": "7745cfd7f8e619cc9e6be450238e6253a57a227f"
+		},
+		{
+			"ImportPath": "github.com/coreos/pflag",
+			"Rev": "2825b874e222bad9e0495db5a365e0e4d2df845c"
+		}
+	]
+}

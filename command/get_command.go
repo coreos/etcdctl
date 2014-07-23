@@ -3,8 +3,8 @@ package command
 import (
 	"errors"
 	"fmt"
-	"github.com/coreos/cobra"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
+	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
 	"os"
 )
 

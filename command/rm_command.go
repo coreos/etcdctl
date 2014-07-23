@@ -2,8 +2,8 @@ package command
 
 import (
 	"errors"
-	"github.com/coreos/cobra"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
+	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
 )
 
 var rmCmd *cobra.Command

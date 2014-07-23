@@ -2,7 +2,7 @@ package command
 
 import (
 	"fmt"
-	"github.com/coreos/cobra"
+	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
 
 	"strings"
 )
