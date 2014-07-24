@@ -241,10 +241,14 @@ The following exit codes can be returned from etcdctl:
 ## Peers
 
 If your etcd cluster isn't available on `http://127.0.0.1:4001` you can specify
-a `--peers` flag or `ETCDCTL_PEERS` environment variable.
+a `--peers` flag or `ETCDCTL_PEERS` environment variable. You can list one peer,
+or a comma-separated list of peers.
 
 ```
 ETCDCTL_PEERS="http://10.0.28.1:4002" etcdctl set my-key to-a-value
+ETCDCTL_PEERS="http://10.0.28.1:4002,http://10.0.28.2:4002,http://10.0.28.3:4002" etcdctl set my-key to-a-value
+etcdctl --peers http://10.0.28.1:4002 my-key to-a-value
+etcdctl --peers http://10.0.28.1:4002,http://10.0.28.2:4002,http://10.0.28.3:4002 etcdctl set my-key to-a-value
 ```
 
 ## Project Details

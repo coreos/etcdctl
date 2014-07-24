@@ -41,17 +41,21 @@ func createHttpPath(addr string) (string, error) {
 func rawhandle(c *cli.Context, fn handlerFunc) (*etcd.Response, error) {
 	sync := !c.GlobalBool("no-sync")
 
-	peers := c.GlobalStringSlice("peers")
-	// Append default peer address if not any
-	if len(peers) == 0 {
-		peers_from_environment := os.Getenv("ETCDCTL_PEERS")
+	peerstr := c.GlobalString("peers")
 
-		if peers_from_environment != "" {
-			peers = strings.Split(peers_from_environment, ",")
-		} else {
-			peers = append(peers, "127.0.0.1:4001")
-		}
+	// Use an environment variable if nothing was supplied on the
+	// command line
+	if peerstr == "" {
+		peerstr = os.Getenv("ETCDCTL_PEERS")
 	}
+	
+	// If we still don't have peers, use a default
+	if peerstr == "" {
+		peerstr = "127.0.0.1:4001"
+	}
+
+	peers := strings.Split(peerstr, ",")
+
 	// If no sync, create http path for each peer address
 	if !sync {
 		revisedPeers := make([]string, 0)
