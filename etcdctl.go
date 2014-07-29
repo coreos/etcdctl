@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/tyndyll/etcdctl/command"
+	"github.com/coreos/etcdctl/command"
 	"github.com/coreos/etcdctl/third_party/github.com/codegangsta/cli"
 )
 
