@@ -4,7 +4,6 @@ package main_test
 // Refer here for instructions : https://github.com/coreos/etcd/blob/master/Documentation/clustering.md
 
 import (
-	"fmt"
 	"os/exec"
 	"regexp"
 	"testing"
@@ -54,7 +53,7 @@ var testCases []testFormat = []testFormat{
 	},
 
 	testFormat{
-
+		stdoutRegX:  regexp.MustCompile(lsPattern),
 		commandLine: exec.Command(CMD, "ls"),
 	},
 
@@ -91,7 +90,6 @@ var testCases []testFormat = []testFormat{
 
 func TestAll(t *testing.T) {
 	for index, tst := range testCases {
-		fmt.Println("testing ", index)
 		cmd := tst.commandLine
 		stdout, err := cmd.StdoutPipe()
 		if err != nil {
