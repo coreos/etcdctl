@@ -8,8 +8,6 @@ import (
 
 var rmDirCmd *cobra.Command
 
-// flags
-// there is a recursive in the rm command.
 func init() {
 	rmDirCmd = &cobra.Command{
 		Use:   "rmdir",
@@ -21,7 +19,7 @@ func init() {
 
 }
 
-// RemoveDirCommand returns the CLI command for "rmdir".
+// RemoveDirCommand returns the Cobra command for "rmdir".
 func RemoveDirCommand() *cobra.Command {
 	return rmDirCmd
 }

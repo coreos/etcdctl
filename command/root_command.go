@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-// var for root command
 var etcdctlRootCmd *cobra.Command
 
 type peerList []string
@@ -28,17 +27,6 @@ func (i *peerList) String() string {
 // Set's argument is a string to be parsed to set the flag.
 // It's a comma-separated list, so we split it.
 func (i *peerList) Set(value string) error {
-
-	//Allow state in peer flag or not : currently allowing state. ( ASK Brandon/others during code review )
-
-	// // If we wanted to allow the flag to be set multiple times,
-	// // accumulating values, we would delete this if statement.
-	// // That would permit usages such as
-	// //	-deltaT 10s -deltaT 15s
-	// // and other combinations.
-	// if len(*i) > 0 {
-	// 	return errors.New("interval flag already set")
-	// }
 	for _, addr := range strings.Split(value, ",") {
 		*i = append(*i, addr)
 	}
@@ -58,10 +46,8 @@ func init() {
 	etcdctlRootCmd.PersistentFlags().BoolVar(&debugFlag, "debug", false, "output cURL commands which can be used to reproduce the request")
 	etcdctlRootCmd.PersistentFlags().BoolVar(&noSyncFlag, "no-sync", true, "don't synchronize cluster information before sending request")
 	etcdctlRootCmd.PersistentFlags().StringVarP(&outputFlag, "output", "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
-	// etcdctlRootCmd.PersistentFlags().StringVar(&outputFlag, "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
 	etcdctlRootCmd.PersistentFlags().VarP(&peersFlag, "peers", "C", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
-	// etcdctlRootCmd.Flags().Var(&peersFlag, "C", "a comma-delimited list of machine addresses in the cluster (default: \"127.0.0.1:4001\")")
-} // end of init
+}
 
 func CreateCommandTree() {
 
@@ -77,8 +63,6 @@ func CreateCommandTree() {
 	etcdctlRootCmd.AddCommand(UpdateDirCommand())
 	etcdctlRootCmd.AddCommand(WatchCommand())
 	etcdctlRootCmd.AddCommand(ExecWatchCommand())
-	// etcdctlRootCmd.DebugFlags()
-	// etcdctlRootCmd.Flags().SetInterspersed(true)
 	etcdctlRootCmd.Execute()
 
 }

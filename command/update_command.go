@@ -9,7 +9,6 @@ import (
 
 var updateCmd *cobra.Command
 
-//flags
 var updateTTLFlag int
 
 func init() {

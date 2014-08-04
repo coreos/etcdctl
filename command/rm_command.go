@@ -8,7 +8,6 @@ import (
 
 var rmCmd *cobra.Command
 
-// flag variables
 var rmDirFlag bool
 var rmRecursiveFlag bool
 var rmWithValueFlag string

@@ -24,7 +24,7 @@ func init() {
 
 }
 
-// NewMakeDirCommand returns the CLI command for "mkdir".
+// NewMakeDirCommand returns the Cobra command for "mkdir".
 func MakeDirCommand() *cobra.Command {
 	return mkDirCmd
 }
