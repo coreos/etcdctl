@@ -7,7 +7,7 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/coreos/cobra",
-			"Rev": "f00e739baec330f2613df8f48d8d8e7dccf4b34f"
+			"Rev": "a10709e642c53797e88c466dcb931ce3e8171415"
 		},
 		{
 			"ImportPath": "github.com/coreos/go-etcd/etcd",
@@ -16,7 +16,7 @@
 		},
 		{
 			"ImportPath": "github.com/coreos/pflag",
-			"Rev": "2825b874e222bad9e0495db5a365e0e4d2df845c"
+			"Rev": "cfeacdf11627c09d2907db50692be8394bb64a10"
 		}
 	]
 }

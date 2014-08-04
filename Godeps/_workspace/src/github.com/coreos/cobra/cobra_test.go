@@ -258,7 +258,7 @@ func TestFlagLong(t *testing.T) {
 }
 
 func TestFlagShort(t *testing.T) {
-	noRRSetupTest("echo -i13 something here")
+	noRRSetupTest("echo -i 13 something here")
 
 	if strings.Join(te, " ") != "something here" {
 		t.Errorf("flags didn't leave proper args remaining..%s given", te)
@@ -282,7 +282,7 @@ func TestFlagShort(t *testing.T) {
 		t.Errorf("default flag value changed, 234 expected, %d given", flagi2)
 	}
 
-	noRRSetupTest("print -i99 one two")
+	noRRSetupTest("print -i=99 one two")
 
 	if strings.Join(tp, " ") != "one two" {
 		t.Errorf("flags didn't leave proper args remaining..%s given", tp)
@@ -309,7 +309,7 @@ func TestChildCommandFlags(t *testing.T) {
 		t.Errorf("invalid flag should generate error")
 	}
 
-	if !strings.Contains(r.Output, "unknown shorthand") {
+	if !strings.Contains(r.Output, "unknown flag") {
 		t.Errorf("Wrong error message displayed, \n %s", r.Output)
 	}
 
@@ -332,16 +332,6 @@ func TestChildCommandFlags(t *testing.T) {
 		t.Errorf("Wrong error message displayed, \n %s", r.Output)
 	}
 
-	// Testing flag with invalid input
-	r = noRRSetupTest("echo -i10E")
-
-	if r.Error == nil {
-		t.Errorf("invalid input should generate error")
-	}
-
-	if !strings.Contains(r.Output, "invalid argument \"10E\" for -i10E") {
-		t.Errorf("Wrong error message displayed, \n %s", r.Output)
-	}
 }
 
 func TestTrailingCommandFlags(t *testing.T) {
@@ -430,8 +420,8 @@ func TestRootHelp(t *testing.T) {
 func TestFlagsBeforeCommand(t *testing.T) {
 	// short without space
 	x := fullSetupTest("-i10 echo")
-	if x.Error != nil {
-		t.Errorf("Valid Input shouldn't have errors, got:\n %q", x.Error)
+	if x.Error == nil {
+		t.Errorf("Invalid Input should report errors")
 	}
 
 	// short (int) with equals
@@ -451,7 +441,7 @@ func TestFlagsBeforeCommand(t *testing.T) {
 
 	// With parsing error properly reported
 	x = fullSetupTest("-i10E echo")
-	if !strings.Contains(x.Output, "invalid argument \"10E\" for -i10E") {
+	if !strings.Contains(x.Output, "unknown flag") {
 		t.Errorf("Wrong error message displayed, \n %s", x.Output)
 	}
 

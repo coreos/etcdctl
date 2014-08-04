@@ -10,7 +10,6 @@ import (
 
 var getCmd *cobra.Command
 
-//flags
 var getSortFlag bool
 var getConsistentFlag bool
 
@@ -28,7 +27,6 @@ func init() {
 	getCmd.Flags().BoolVar(&getSortFlag, "sort", false, "returns result in sorted order")
 }
 
-// NewGetCommand returns the CLI command for "get".
 func GetCommand() *cobra.Command {
 	return getCmd
 }

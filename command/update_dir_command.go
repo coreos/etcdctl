@@ -8,7 +8,6 @@ import (
 
 var updateDirCmd *cobra.Command
 
-//flags
 var updateDirTTLFlag int
 
 func init() {

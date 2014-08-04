@@ -24,7 +24,7 @@ import (
 	"os"
 	"strings"
 
-	flag "github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/pflag"
+	flag "github.com/coreos/pflag"
 )
 
 // Command is just that, a command for your application.
@@ -281,7 +281,6 @@ func (c *Command) Find(arrs []string) (*Command, []string, error) {
 	innerfind = func(c *Command, args []string) (*Command, []string) {
 		if len(args) > 0 && c.HasSubCommands() {
 			argsWOflags := stripFlags(args)
-			// fmt.Println("Arguments without flags are ", argsWOflags)
 			if len(argsWOflags) > 0 {
 				matches := make([]*Command, 0)
 				for _, cmd := range c.commands {
@@ -333,7 +332,6 @@ func (c *Command) findAndExecute(args []string) (err error) {
 	if e != nil {
 		return e
 	}
-	// fmt.Println("about to execute ", cmd.Name())
 	return cmd.execute(a)
 }
 
@@ -378,17 +376,17 @@ func (c *Command) errorMsgFromParse() string {
 	}
 }
 
-//Takes the command line arguments in all the various forms that
-//etcdctl supports and converts the flags to POSIX style flags
+// Takes the command line arguments in all the various forms that
+// etcdctl supports and converts the flags to POSIX style flags
 // without any difference in the long and short flags.
-func (c *Command) reformatArgs(args []string) []string {
+func (c *Command) reformatArgs(args []string) ([]string, error) {
 
 	// if args[i] has prefix of - and contains a = there is nothing to do.
 	// if args[i] has no prefix then it's a command and do nothing.
 	// if args[i] has a prefix of - but does not contain a = then
 	// if args[i] is a boolean flag ; do nothing
 	// otherwise join args[i] and args[i+1]
-	// if the value is not present, do nothing error will be caught later on.
+	// if the value is not present, and its not a boolean flag, raise an error.
 
 	_, booleanFlagMap := c.getAllBooleanFlags()
 
@@ -407,36 +405,36 @@ func (c *Command) reformatArgs(args []string) []string {
 				break
 			}
 
-			if !strings.Contains(args[i], "=") { // without an equal to sign in it.
+			if !strings.Contains(args[i], "=") {
 				num_minuses := 1
 				if len(args[i]) > 1 && args[i][1] == '-' {
 					num_minuses = 2
 				}
-				if _, ok := booleanFlagMap[args[i][num_minuses:]]; !ok { // its not a boolean flag.
-					if i+1 < argNumber { // there should be a value following it.
+				if _, ok := booleanFlagMap[args[i][num_minuses:]]; !ok {
+					if i+1 < argNumber {
 						modifiedArgs = append(modifiedArgs, strings.Join(args[i:i+2], "="))
-						// j += 1
 						i = i + 1 // the loop will increment once as well giving us desired i+2
 						continue
+					} else { // it's not a boolean flag but has no value specified (may not be a flag as well)
+						return nil, errors.New("unknown flag or unspecified value for non-boolean flag")
+
 					}
 				} else { // its a boolean flag without a value specified so must be set to true.
 					modifiedArgs = append(modifiedArgs, args[i])
-					// j += 1
+
 				}
-			} else { // it's a flag with an equal to sign in it.
+			} else { // it's a flag with an = sign in it, no need to reformat
 				modifiedArgs = append(modifiedArgs, args[i])
-				// j += 1
 			}
 
 			continue
 		}
 
 		modifiedArgs = append(modifiedArgs, args[i])
-		// j += 1
 
 	}
 
-	return modifiedArgs
+	return modifiedArgs, nil
 
 }
 
@@ -454,9 +452,6 @@ func (c *Command) Execute() (err error) {
 	// overriding
 	c.initHelp()
 
-	// solution is: convert args to have -flag val -> -flag=val
-	// that should be the last thing I have to take care of.
-
 	var args []string
 
 	if len(c.args) == 0 {
@@ -465,8 +460,11 @@ func (c *Command) Execute() (err error) {
 		args = c.args
 	}
 
-	//reformat the arguments here:
-	args = c.reformatArgs(args)
+	args, err = c.reformatArgs(args)
+
+	if err != nil {
+		return err
+	}
 
 	if len(args) == 0 {
 		// Only the executable is called and the root is runnable, run it
@@ -476,12 +474,7 @@ func (c *Command) Execute() (err error) {
 			c.Usage()
 		}
 	} else {
-		// fmt.Println("args to findAndExecute are : ", args)
 		err = c.findAndExecute(args)
-		if err != nil {
-
-			// fmt.Println("finished findAndExecute with error = ", err.Error())
-		}
 	}
 
 	// Now handle the case where the root is runnable and only flags are provided
@@ -803,14 +796,11 @@ func (c *Command) getAllCommands() []*Command {
 	return baseSlice
 }
 
-// call only on the root.
 func (c *Command) getAllBooleanFlags() (error, map[string]struct{}) {
-
 	if c.Root().Name() != c.Name() {
 		return errors.New("Error: getAllBooleanFlags not called on the Root command "), nil
 	}
-	booleanFlags := make(map[string]struct{}) // change 10 to something better later ? ( or let append handle the sizing?)
-
+	booleanFlags := make(map[string]struct{})
 	fn := func(f *flag.Flag) {
 		if f.Value.Type() == "bool" {
 			booleanFlags[f.Name] = struct{}{}
@@ -823,15 +813,11 @@ func (c *Command) getAllBooleanFlags() (error, map[string]struct{}) {
 
 	for _, cmd := range c.getAllCommands() {
 		cmd.Flags().VisitAll(fn)
-
 	}
-
-	// adding persistent flags now:
 
 	c.PersistentFlags().VisitAll(fn)
 
-	return nil, booleanFlags // assuming that even if same
-
+	return nil, booleanFlags
 }
 
 func (c *Command) mergePersistentFlags() {

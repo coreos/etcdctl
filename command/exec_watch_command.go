@@ -14,8 +14,6 @@ import (
 
 var execWatchCmd *cobra.Command
 
-//flags
-
 var execRecursiveFlag bool
 var execAfterIndexFlag int
 
@@ -38,16 +36,12 @@ func ExecWatchCommand() *cobra.Command {
 
 // execWatchCommandFunc executes the "exec-watch" command.
 func execWatchCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
-	// _ = io.Copy
-	// _ = exec.Command
-	// args := c.Args()
 	argsLen := len(args)
 
 	if argsLen < 2 {
 		return nil, errors.New("Key and command to exec required")
 	}
 
-	// key := args[argsLen-1]
 	key := args[0]
 	cmdArgs := args[1:]
 

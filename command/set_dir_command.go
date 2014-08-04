@@ -9,9 +9,6 @@ import (
 var setDirCmd *cobra.Command
 var setDirTtlFlag int
 
-// The ttl flag does not seem to be supported on directories , yet it was listed as a flag
-// in the previous implementation. hence I have chosen to keep it for now.
-
 func init() {
 
 	setDirCmd = &cobra.Command{
@@ -26,7 +23,7 @@ func init() {
 	setDirCmd.Flags().IntVar(&setDirTtlFlag, "ttl", 0, "key time-to-live ")
 }
 
-// NewSetDirCommand returns the CLI command for "setDir".
+// NewSetDirCommand returns the Cobra command for "setDir".
 func SetDirCommand() *cobra.Command {
 
 	return setDirCmd

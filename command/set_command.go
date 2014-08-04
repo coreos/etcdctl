@@ -27,7 +27,7 @@ func init() {
 	setCmd.Flags().IntVar(&swapWithIndexFlag, "swap-with-index", 0, "previous index")
 }
 
-// NewSetCommand returns the CLI command for "set".
+// NewSetCommand returns the cobra command for "set".
 func SetCommand() *cobra.Command {
 	return setCmd
 }

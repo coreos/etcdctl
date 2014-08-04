@@ -11,7 +11,6 @@ import (
 
 var watchCmd *cobra.Command
 
-//flags
 var foreverFlag bool
 var watchRecursiveFlag bool
 var watchAfterIndexFlag int
@@ -30,7 +29,7 @@ func init() {
 
 }
 
-// WatchCommand returns the CLI command for "watch".
+// WatchCommand returns the Cobra command for "watch".
 func WatchCommand() *cobra.Command {
 	return watchCmd
 
