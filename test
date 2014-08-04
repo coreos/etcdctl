@@ -5,4 +5,4 @@
 
 go test -i ./command
 go test -v ./command
-#go test -v #ensure that there are 3 instances of etcd running locally on your machine then uncomment this line.  
+go test -v #ensure that there are 3 instances of etcd running locally on your machine then uncomment this line.  

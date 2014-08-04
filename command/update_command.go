@@ -2,14 +2,16 @@ package command
 
 import (
 	"errors"
+	"os"
+
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
-	"os"
 )
 
-var updateCmd *cobra.Command
-
-var updateTTLFlag int
+var (
+	updateCmd     *cobra.Command
+	updateTTLFlag int
+)
 
 func init() {
 	updateCmd = &cobra.Command{
@@ -19,9 +21,7 @@ func init() {
 			handleKey(cmd, args, updateCommandFunc)
 		},
 	}
-
 	updateCmd.Flags().IntVar(&updateTTLFlag, "ttl", 0, "key time-to-live")
-
 }
 
 // UpdateCommand returns the updateCommand to be added onto the root.
@@ -32,15 +32,14 @@ func UpdateCommand() *cobra.Command {
 // updateCommandFunc executes the "update" command.
 func updateCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
 	if len(args) == 0 {
-		return nil, errors.New("Key required")
+		return nil, errors.New("key required")
 	}
 	key := args[0]
 	value, err := argOrStdin(args, os.Stdin, 1)
 	if err != nil {
-		return nil, errors.New("Value required")
+		return nil, errors.New("value required")
 	}
 
-	ttl := updateTTLFlag
-
-	return client.Update(key, value, uint64(ttl))
+	ttl := uint64(updateTTLFlag)
+	return client.Update(key, value, ttl)
 }

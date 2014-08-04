@@ -2,16 +2,18 @@ package command
 
 import (
 	"errors"
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
 	"os"
 
+	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
 )
 
-var setCmd *cobra.Command
-var ttlFlag int
-var swapWithValueFlag string
-var swapWithIndexFlag int
+var (
+	setCmd            *cobra.Command
+	ttlFlag           int
+	swapWithValueFlag string
+	swapWithIndexFlag int
+)
 
 func init() {
 	setCmd = &cobra.Command{
@@ -35,21 +37,19 @@ func SetCommand() *cobra.Command {
 // setCommandFunc executes the "set" command.
 func setCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
 	if len(args) == 0 {
-		return nil, errors.New("Key required")
+		return nil, errors.New("key required")
 	}
 	key := args[0]
 	value, err := argOrStdin(args, os.Stdin, 1)
 	if err != nil {
-		return nil, errors.New("Value required")
+		return nil, errors.New("value required")
 	}
+	ttl := uint64(ttlFlag)
+	prevIndex := uint64(swapWithIndexFlag)
 
-	ttl := ttlFlag
-	prevValue := swapWithValueFlag
-	prevIndex := swapWithIndexFlag
-
-	if prevValue == "" && prevIndex == 0 {
-		return client.Set(key, value, uint64(ttl))
+	if swapWithValueFlag == "" && prevIndex == 0 {
+		return client.Set(key, value, ttl)
 	} else {
-		return client.CompareAndSwap(key, value, uint64(ttl), prevValue, uint64(prevIndex))
+		return client.CompareAndSwap(key, value, ttl, swapWithValueFlag, prevIndex)
 	}
 }

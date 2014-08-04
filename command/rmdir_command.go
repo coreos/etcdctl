@@ -2,6 +2,7 @@ package command
 
 import (
 	"errors"
+
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
 )
@@ -16,7 +17,6 @@ func init() {
 			handleDir(cmd, args, removeDirCommandFunc)
 		},
 	}
-
 }
 
 // RemoveDirCommand returns the Cobra command for "rmdir".
@@ -27,9 +27,8 @@ func RemoveDirCommand() *cobra.Command {
 // removeDirCommandFunc executes the "rmdir" command.
 func removeDirCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etcd.Response, error) {
 	if len(args) == 0 {
-		return nil, errors.New("Key required")
+		return nil, errors.New("key required")
 	}
 	key := args[0]
-
 	return client.DeleteDir(key)
 }

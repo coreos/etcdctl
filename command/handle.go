@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
 	"net/url"
 	"os"
 	"strings"
 
+	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
 )
 
@@ -40,8 +40,8 @@ func createHttpPath(addr string) (string, error) {
 // environment but performs no output formatting.
 func rawhandle(cmd *cobra.Command, args []string, fn handlerFunc) (*etcd.Response, error) {
 	sync := !noSyncFlag
-
 	peers := peersFlag
+
 	// Append default peer address if not any
 	if len(peers) == 0 {
 		peers_from_environment := os.Getenv("ETCDCTL_PEERS")
@@ -64,7 +64,6 @@ func rawhandle(cmd *cobra.Command, args []string, fn handlerFunc) (*etcd.Respons
 		}
 		peers = revisedPeers
 	}
-
 	client := etcd.NewClient(peers)
 
 	if debugFlag {
@@ -74,7 +73,7 @@ func rawhandle(cmd *cobra.Command, args []string, fn handlerFunc) (*etcd.Respons
 	// Sync cluster.
 	if sync {
 		if ok := client.SyncCluster(); !ok {
-			handleError(FailedToConnectToHost, errors.New("Cannot sync with the cluster using peers "+strings.Join(peers, ", ")))
+			handleError(FailedToConnectToHost, errors.New("cannot sync with the cluster using peers "+strings.Join(peers, ", ")))
 		}
 	}
 

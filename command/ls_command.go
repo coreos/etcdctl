@@ -7,8 +7,10 @@ import (
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
 )
 
-var lsCmd *cobra.Command
-var lsRecursiveFlag bool
+var (
+	lsCmd           *cobra.Command
+	lsRecursiveFlag bool
+)
 
 func init() {
 	lsCmd = &cobra.Command{
@@ -18,7 +20,6 @@ func init() {
 			handleLs(cmd, args, lsCommandFunc)
 		},
 	}
-
 	lsCmd.Flags().BoolVar(&lsRecursiveFlag, "recursive", false, "returns all values for key and child keys")
 }
 
@@ -49,7 +50,6 @@ func lsCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etc
 		key = args[0]
 	}
 	recursive := lsRecursiveFlag
-
 	// Retrieve the value from the server.
 	return client.Get(key, false, recursive)
 }

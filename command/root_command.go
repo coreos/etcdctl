@@ -2,20 +2,20 @@ package command
 
 import (
 	"fmt"
-	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
-
 	"strings"
-)
 
-var etcdctlRootCmd *cobra.Command
+	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
+)
 
 type peerList []string
 
-// variable for the global flags.
-var debugFlag bool
-var noSyncFlag bool
-var outputFlag string
-var peersFlag peerList
+var (
+	etcdctlRootCmd *cobra.Command
+	debugFlag      bool
+	noSyncFlag     bool
+	outputFlag     string
+	peersFlag      peerList
+)
 
 // String is the method to format the flag's value, part of the flag.Value interface.
 // The String method's output will be used in diagnostics.
@@ -38,11 +38,11 @@ func (i *peerList) Type() string {
 }
 
 func init() {
-
 	etcdctlRootCmd = &cobra.Command{
 		Use:   "etcdctl",
 		Short: "A simple command line client for etcd.",
 	}
+
 	etcdctlRootCmd.PersistentFlags().BoolVar(&debugFlag, "debug", false, "output cURL commands which can be used to reproduce the request")
 	etcdctlRootCmd.PersistentFlags().BoolVar(&noSyncFlag, "no-sync", true, "don't synchronize cluster information before sending request")
 	etcdctlRootCmd.PersistentFlags().StringVarP(&outputFlag, "output", "o", "simple", "output response in the given format (`simple` or `json` or `extended`)")
@@ -50,7 +50,6 @@ func init() {
 }
 
 func CreateCommandTree() {
-
 	etcdctlRootCmd.AddCommand(LsCommand())
 	etcdctlRootCmd.AddCommand(SetCommand())
 	etcdctlRootCmd.AddCommand(SetDirCommand())
@@ -64,5 +63,4 @@ func CreateCommandTree() {
 	etcdctlRootCmd.AddCommand(WatchCommand())
 	etcdctlRootCmd.AddCommand(ExecWatchCommand())
 	etcdctlRootCmd.Execute()
-
 }

@@ -2,19 +2,20 @@ package command
 
 import (
 	"errors"
+
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/cobra"
 	"github.com/coreos/etcdctl/Godeps/_workspace/src/github.com/coreos/go-etcd/etcd"
 )
 
-var rmCmd *cobra.Command
-
-var rmDirFlag bool
-var rmRecursiveFlag bool
-var rmWithValueFlag string
-var rmWithIndexFlag int
+var (
+	rmCmd           *cobra.Command
+	rmDirFlag       bool
+	rmRecursiveFlag bool
+	rmWithValueFlag string
+	rmWithIndexFlag int
+)
 
 func init() {
-
 	rmCmd = &cobra.Command{
 		Use:   "rm",
 		Short: "remove a key",
@@ -28,7 +29,6 @@ func init() {
 	rmCmd.Flags().BoolVar(&rmRecursiveFlag, "recursive", false, "removes the key and all child keys(if it is a directory)")
 	rmCmd.Flags().StringVar(&rmWithValueFlag, "with-value", "", "previous value")
 	rmCmd.Flags().IntVar(&rmWithIndexFlag, "with-index", 0, "previous index")
-
 }
 
 // RemoveCommand returns the *cobra.Command for "rm".
@@ -42,8 +42,6 @@ func removeCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (
 		return nil, errors.New("Key required")
 	}
 	key := args[0]
-	recursive := rmRecursiveFlag
-	dir := rmDirFlag
 
 	// TODO: distinguish with flag is not set and empty flag
 	// the cli pkg need to provide this feature
@@ -54,8 +52,8 @@ func removeCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (
 		return client.CompareAndDelete(key, prevValue, prevIndex)
 	}
 
-	if recursive || !dir {
-		return client.Delete(key, recursive)
+	if rmRecursiveFlag || !rmDirFlag {
+		return client.Delete(key, rmRecursiveFlag)
 	}
 
 	return client.DeleteDir(key)
