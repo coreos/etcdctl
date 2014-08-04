@@ -10,7 +10,7 @@ import (
 
 var (
 	mkCmd     *cobra.Command
-	mkTtlFlag int
+	mkTTLFlag int
 )
 
 func init() {
@@ -21,7 +21,7 @@ func init() {
 			handleKey(cmd, args, makeCommandFunc)
 		},
 	}
-	mkCmd.Flags().IntVar(&mkTtlFlag, "ttl", 0, "key time-to-live")
+	mkCmd.Flags().IntVar(&mkTTLFlag, "ttl", 0, "key time-to-live")
 }
 
 // returns the mkCommand.
@@ -39,5 +39,5 @@ func makeCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*e
 	if err != nil {
 		return nil, errors.New("value required")
 	}
-	return client.Create(key, value, uint64(mkTtlFlag))
+	return client.Create(key, value, uint64(mkTTLFlag))
 }

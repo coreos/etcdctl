@@ -9,7 +9,7 @@ import (
 
 var (
 	mkDirCmd     *cobra.Command
-	mkDirTtlFlag int
+	mkDirTTLFlag int
 )
 
 func init() {
@@ -20,7 +20,7 @@ func init() {
 			handleDir(cmd, args, makeDirCommandFunc)
 		},
 	}
-	mkDirCmd.Flags().IntVar(&mkDirTtlFlag, "ttl", 0, "directory time-to-live")
+	mkDirCmd.Flags().IntVar(&mkDirTTLFlag, "ttl", 0, "directory time-to-live")
 }
 
 // NewMakeDirCommand returns the Cobra command for "mkdir".
@@ -34,5 +34,5 @@ func makeDirCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) 
 		return nil, errors.New("key required")
 	}
 	key := args[0]
-	return client.CreateDir(key, uint64(mkDirTtlFlag))
+	return client.CreateDir(key, uint64(mkDirTTLFlag))
 }
