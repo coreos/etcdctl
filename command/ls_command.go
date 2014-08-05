@@ -10,6 +10,7 @@ import (
 var (
 	lsCmd           *cobra.Command
 	lsRecursiveFlag bool
+	lsAppendSlash   bool
 )
 
 func init() {
@@ -21,6 +22,7 @@ func init() {
 		},
 	}
 	lsCmd.Flags().BoolVar(&lsRecursiveFlag, "recursive", false, "returns all values for key and child keys")
+	lsCmd.Flags().BoolVar(&lsAppendSlash, "p", false, "append slash (/) to directories")
 }
 
 func LsCommand() *cobra.Command {
@@ -56,6 +58,9 @@ func lsCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etc
 
 // rPrint recursively prints out the nodes in the node structure.
 func rPrint(n *etcd.Node) {
+	if n.Dir && lsAppendSlash {
+		fmt.Println(fmt.Sprintf("%v/", n.Key))
+	}
 	fmt.Println(n.Key)
 	for _, node := range n.Nodes {
 		rPrint(node)
