@@ -60,8 +60,10 @@ func lsCommandFunc(cmd *cobra.Command, args []string, client *etcd.Client) (*etc
 func rPrint(n *etcd.Node) {
 	if n.Dir && lsAppendSlash {
 		fmt.Println(fmt.Sprintf("%v/", n.Key))
+	} else {
+
+		fmt.Println(n.Key)
 	}
-	fmt.Println(n.Key)
 	for _, node := range n.Nodes {
 		rPrint(node)
 	}
