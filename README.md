@@ -214,7 +214,7 @@ ETCD_KEY=/foo/bar
 
 Continuously and recursively watch a key and exec a program:
 ```
-$ etcdctl exec- --recursive /foo -- sh -c "env | grep ETCD"
+$ etcdctl exec-watch --recursive /foo -- sh -c "env | grep ETCD"
 ETCD_WATCH_ACTION=set
 ETCD_VALUE=My configuration stuff
 ETCD_MODIFIED_INDEX=1999
