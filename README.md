@@ -124,7 +124,7 @@ $ etcdctl ls /adir
 /adir/key2
 ```
 
-Add `-recursive` to recursively list subdirectories encountered.
+Add `--recursive` to recursively list subdirectories encountered.
 
 ```
 $ etcdctl ls --recursive
@@ -214,7 +214,7 @@ ETCD_KEY=/foo/bar
 
 Continuously and recursively watch a key and exec a program:
 ```
-$ etcdctl exec-watch /foo -- sh -c "env | grep ETCD"
+$ etcdctl exec-watch --recursive /foo -- sh -c "env | grep ETCD"
 ETCD_WATCH_ACTION=set
 ETCD_VALUE=My configuration stuff
 ETCD_MODIFIED_INDEX=1999
