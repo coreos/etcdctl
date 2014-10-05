@@ -21,8 +21,4 @@ _testmain.go
 
 *.exe
 
-/src
-/pkg
-/bin
-
-Godeps/_workspace/src/github.com/coreos/etcdctl
+cobra.test
