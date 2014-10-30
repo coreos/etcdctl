@@ -31,6 +31,8 @@ func main() {
 		command.NewUpdateDirCommand(),
 		command.NewWatchCommand(),
 		command.NewExecWatchCommand(),
+		command.NewImportCommand(),
+		command.NewExportCommand(),
 	}
 	app.Run(os.Args)
 }
