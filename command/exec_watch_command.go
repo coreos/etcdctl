@@ -20,6 +20,7 @@ func NewExecWatchCommand() cli.Command {
 		Flags: []cli.Flag{
 			cli.IntFlag{"after-index", 0, "watch after the given index"},
 			cli.BoolFlag{"recursive", "watch all values for key and child keys"},
+			cli.BoolFlag{"synthesize-set", "synthesize fake \"set\" actions for pre-existing keys"},
 		},
 		Action: func(c *cli.Context) {
 			handleKey(c, execWatchCommandFunc)
@@ -41,15 +42,15 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 	key := args[argsLen-1]
 	cmdArgs := args[:argsLen-1]
 
-	index := 0
+	index := uint64(0)
 	if c.Int("after-index") != 0 {
-		index = c.Int("after-index") + 1
+		index = uint64(c.Int("after-index")) + 1
 		key = args[0]
 		cmdArgs = args[2:]
 	}
 
 	recursive := c.Bool("recursive")
-	if recursive != false {
+	if recursive {
 		key = args[0]
 		cmdArgs = args[2:]
 	}
@@ -66,7 +67,21 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 
 	receiver := make(chan *etcd.Response)
 	client.SetConsistency(etcd.WEAK_CONSISTENCY)
-	go client.Watch(key, uint64(index), recursive, receiver, stop)
+
+	synthesize_set := c.Bool("synthesize-set")
+	go func() {
+		if synthesize_set {
+			resp, err := client.Get(key, false, recursive)
+			if err == nil {
+				rWalk(resp.Node, func(n *etcd.Node) {
+					receiver <- &etcd.Response{Action: "set", Node: n}
+				})
+				index = resp.EtcdIndex + 1
+			}
+		}
+
+		client.Watch(key, index, recursive, receiver, stop)
+	}()
 
 	for {
 		resp := <-receiver
@@ -94,6 +109,16 @@ func execWatchCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, 
 	}
 
 	return nil, nil
+}
+
+func rWalk(n *etcd.Node, f func(n *etcd.Node)) {
+	if !n.Dir {
+		f(n)
+	}
+	for i := range n.Nodes {
+		sub_node := &n.Nodes[i] // Ensure our pointer doesn't get overwritten
+		rWalk(sub_node, f)
+	}
 }
 
 func environResponse(resp *etcd.Response, env []string) []string {
