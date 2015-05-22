@@ -10,10 +10,11 @@ import (
 // NewMakeDirCommand returns the CLI command for "mkdir".
 func NewMakeDirCommand() cli.Command {
 	return cli.Command{
-		Name:	"mkdir",
-		Usage:	"make a new directory",
+		Name:  "mkdir",
+		Usage: "make a new directory",
 		Flags: []cli.Flag{
 			cli.IntFlag{"ttl", 0, "key time-to-live"},
+			cli.BoolFlag{"p", "only make the directory if it does not exist"},
 		},
 		Action: func(c *cli.Context) {
 			handleDir(c, makeDirCommandFunc)
@@ -28,6 +29,13 @@ func makeDirCommandFunc(c *cli.Context, client *etcd.Client) (*etcd.Response, er
 	}
 	key := c.Args()[0]
 	ttl := c.Int("ttl")
+	p := c.Bool("p")
+
+	// p allows "mkdir" to succeed even when the directory already exists.
+	_, err := client.Get(key, false, false)
+	if err == nil && p {
+		return nil, nil
+	}
 
 	return client.CreateDir(key, uint64(ttl))
 }
