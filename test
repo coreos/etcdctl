@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Get GOPATH, etc from build
-. ./build
-
-go test -i ./command
-go test -v ./command
